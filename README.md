@@ -84,10 +84,6 @@ Requirements
 - [Composer][9]
 - [O2System Spl][10]
 
-Referensi
----------
-Untuk mengetahui lebih lanjut mengenai RajaOngkir API, lihat di [Dokumentasi API Ipaymu][12].
-
 [1]: http://steevenz.com
 [2]: http://steevenz.com/blog/id-payroll-calculator-api
 [3]: mailto:steevenz@steevenz.com
