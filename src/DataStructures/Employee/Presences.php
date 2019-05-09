@@ -10,7 +10,7 @@
  */
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator\DataStructures;
+namespace Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee;
 
 // ------------------------------------------------------------------------
 
@@ -20,13 +20,6 @@ namespace Steevenz\IndonesiaPayrollCalculator\DataStructures;
  */
 class Presences
 {
-    /**
-     * Presences::$calculatedWorkingDays
-     *
-     * @var int
-     */
-    public $calculatedWorkingDays = 25;
-
     /**
      * Presences::$workDays
      *
@@ -40,6 +33,13 @@ class Presences
      * @var int
      */
     public $overtime = 0;
+
+    /**
+     * Presences::$latetime
+     *
+     * @var int
+     */
+    public $latetime = 0;
 
     /**
      * Presences::$travelDays
@@ -106,7 +106,7 @@ class Presences
 
     /**
      * Presences::getCalculatedDays
-     * 
+     *
      * @return int
      */
     public function getCalculatedDays()

@@ -10,17 +10,27 @@
  */
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator\DataStructures\Salary;
+namespace Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee;
 
 // ------------------------------------------------------------------------
 
-use O2System\Spl\Patterns\Structural\Repository\AbstractRepository;
-
 /**
- * Class Deductions
- * @package Steevenz\IndonesiaPayrollCalculator\DataStructures\Salary
+ * Class Earnings
+ * @package Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee
  */
-class Deductions extends AbstractRepository
+class Earnings
 {
+    /**
+     * Earnings::$basePay
+     *
+     * @var int
+     */
+    public $basePay = 0;
 
+    /**
+     * Earnings::$overtimePay
+     *
+     * @var int
+     */
+    public $overtimePay = 0;
 }

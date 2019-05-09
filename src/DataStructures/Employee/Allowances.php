@@ -10,17 +10,17 @@
  */
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator\DataStructures\Salary;
+namespace Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee;
 
 // ------------------------------------------------------------------------
 
-use O2System\Spl\Patterns\Structural\Repository\AbstractRepository;
+use O2System\Spl\DataStructures\SplArrayObject;
 
 /**
  * Class Allowances
- * @package Steevenz\IndonesiaPayrollCalculator\DataStructures\Salary
+ * @package Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee
  */
-class Allowances extends AbstractRepository
+class Allowances extends SplArrayObject
 {
 
 }
