@@ -5,11 +5,11 @@ Ini merupakan PHP Component pembantu proses perhitungan gaji yang disesuaikan de
 
 Referensi
 ---------
-[PPh21](https://www.online-pajak.com/perhitungan-pph-21)
-[PTKP](https://www.online-pajak.com/ptkp-terbaru-pph-21)
-[BPJS Kesehatan](https://www.panduanbpjs.com/iuran-bpjs-perbulan/)
-[BPJS Ketenagakerjaan](https://www.finansialku.com/berapa-iuran-bpjs-ketenagakerjaan-yang-harus-saya-bayar-dan-yang-ditanggung-perusahaan/)
-[UMP 2019](https://smartlegal.id/smarticle/layanan/2018/12/12/ini-daftar-upah-minimum-provinsi-ump-2019/)
+* [PPh21](https://www.online-pajak.com/perhitungan-pph-21)
+* [PTKP](https://www.online-pajak.com/ptkp-terbaru-pph-21)
+* [BPJS Kesehatan](https://www.panduanbpjs.com/iuran-bpjs-perbulan/)
+* [BPJS Ketenagakerjaan](https://www.finansialku.com/berapa-iuran-bpjs-ketenagakerjaan-yang-harus-saya-bayar-dan-yang-ditanggung-perusahaan/)
+* [UMP 2019](https://smartlegal.id/smarticle/layanan/2018/12/12/ini-daftar-upah-minimum-provinsi-ump-2019/)
 
 Instalasi
 ---------
