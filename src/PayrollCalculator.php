@@ -208,8 +208,6 @@ class PayrollCalculator
             if ($this->employee->maritalStatus === true) {
                 $yearlyPKP = $yearlyPKP - $this->provisions->state->additionalPTKPforMarriedEmployees;
             }
-
-            //$PKP = ($yearlyNetIncome - $PTKP) * $this->provisions->state->getPPh21Rate($monthlyNetIncome);
         }
 
         $yearlyPPh21 = $yearlyPKP * $this->provisions->state->getPPh21Rate($monthlyNetIncome);
@@ -220,6 +218,8 @@ class PayrollCalculator
         }
 
         $monthlyPPh21 = $yearlyPPh21 / 12;
+
+        $this->employee->deductions->PPh21 = $monthlyPPh21;
 
         return new SplArrayObject([
             'earnings' => new SplArrayObject([
@@ -232,7 +232,8 @@ class PayrollCalculator
             'maritalPTKP' => $this->employee->maritalStatus ? $this->provisions->state->additionalPTKPforMarriedEmployees : 0,
             'yearlyPKP' => $yearlyPKP,
             'yearlyPPh21' => $yearlyPPh21,
-            'monthlyPPh21' => $monthlyPPh21
+            'monthlyPPh21' => $monthlyPPh21,
+            'takeHomePay' => $monthlyNetIncome - $monthlyPPh21
         ]);
     }
 }
