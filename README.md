@@ -56,7 +56,7 @@ $payrollCalculator->employee->deductions->offsetSet('kasbon', 100000);
 $payrollCalculator->provisions->company->numOfWorkingDays = 25; // Jumlah hari kerja dalam satu bulan
 $payrollCalculator->provisions->company->calculateBPJSKesehatan = true; // Apakah perusahaan menyediakan BPJS Kesehatan / tidak untuk orang tersebut
 $payrollCalculator->provisions->company->calculateBPJSKetenagakerjaan = true; // Apakah perusahaan menyediakan BPJS Ketenagakerjaan / tidak untuk orang tersebut
-$payrollCalculator->provisions->company->riskGrad = 2; // Golongan resiko ketenagakerjaan, umumnya 2
+$payrollCalculator->provisions->company->riskGrade = 2; // Golongan resiko ketenagakerjaan, umumnya 2
 $payrollCalculator->provisions->company->absentPenalty = 55000; // Perhitungan nilai potongan gaji/hari sebagai penalty.
 $payrollCalculator->provisions->company->latetimePenalty = 100000; // Perhitungan nilai keterlambatan sebagai penalty.
 
