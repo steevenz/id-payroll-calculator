@@ -303,7 +303,7 @@ class PayrollCalculator
         $this->result->offsetSet('bonus', $this->employee->bonus);
         $this->result->offsetSet('deductions', $this->employee->deductions);
 
-        $this->result->takeHomePay = $this->result->earnings->nett - $this->employee->deductions->getSum();
+        $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->getSum();
 
         return $this->result;
     }
