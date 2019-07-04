@@ -21,24 +21,31 @@ composer require steevenz/id-payroll-calculator
 Penggunaan
 ----------
 ```php
-use Steevenz\IndonesiaPayrollCalculator;
+use Steevenz\IndonesiaPayrollCalculator\PayrollCalculator;
 
 // Inisiasi class PayrollCalculator
 $payrollCalculator = new PayrollCalculator();
+
+// Khusus Perhitungan PPH 21 -------
+
+// Tax Number
+$payrollCalculator->taxNumber = 21;
 
 // Set data karyawan
 $payrollCalculator->employee->maritalStatus = true; // Menikah (true), Tidak Menikah/Single (false), secara default sudah terisi nilai false.
 $payrollCalculator->employee->hasNPWP = true; // Secara default sudah terisi nilai true. Jika tidak memiliki npwp akan dikenakan potongan tambahan 20%
 $payrollCalculator->employee->numOfDependentsFamily = 0; // Jumlah tanggungan, max 5 jika lebih akan dikenakan tambahannya perorang sesuai ketentuan BPJS Kesehatan
 
-// Set data pendapatan default karyawan
-$payrollCalculator->employee->earnings->basePay = 8000000; // Besaran nilai gaji pokok/bulan
+// Set data pendapatan karyawan
+$payrollCalculator->employee->earnings->base = 8000000; // Besaran nilai gaji pokok/bulan
+$payrollCalculator->employee->earnings->fixedAllowance = 0; // Besaran nilai tunjangan tetap
 $payrollCalculator->employee->earnings->overtime = 10000; // Besaran nilai uang lembur/jam
+$payrollCalculator->employee->calculateHolidayAllowance = 0; // jumlah bulan proporsional
 // NOTE: besaran nilai diatas bukan nilai hasil proses perhitungan absensi tetapi nilai default sebagai faktor perhitungan gaji.
 
 // Set data kehadiran karyawan
 $payrollCalculator->employee->presences->workDays = 25; // jumlah hari masuk kerja
-$payrollCalculator->employee->presences->overtime = 0; //  perhitungan jumlah lembur dalam satuan jam
+$payrollCalculator->employee->presences->overtime = 2; //  perhitungan jumlah lembur dalam satuan jam
 $payrollCalculator->employee->presences->latetime = 0; //  perhitungan jumlah keterlambatan dalam satuan jam
 $payrollCalculator->employee->presences->travelDays = 0; //  perhitungan jumlah hari kepergian dinas
 $payrollCalculator->employee->presences->indisposedDays = 0; //  perhitungan jumlah hari sakit yang telah memiliki surat dokter
@@ -48,15 +55,20 @@ $payrollCalculator->employee->presences->absentDays = 0; //  perhitungan jumlah 
 $payrollCalculator->employee->allowances->offsetSet('tunjanganMakan', 100000);
 // NOTE: Jumlah allowances tidak ada batasan
 
-// Set data tunjangan karyawan diluar potongan BPJS Kesehatan dan Ketenagakerjaan
+// Set data potongan karyawan diluar potongan BPJS Kesehatan dan Ketenagakerjaan
 $payrollCalculator->employee->deductions->offsetSet('kasbon', 100000);
 // NOTE: Jumlah deductions tidak ada batasan
 
+// Set data bonus karyawan diluar tunjangan
+$payrollCalculator->employee->bonus->offsetSet('serviceCharge', 100000);
+// NOTE: Jumlah bonus tidak ada batasan
+
 // Set data ketentuan perusahaan
 $payrollCalculator->provisions->company->numOfWorkingDays = 25; // Jumlah hari kerja dalam satu bulan
+$payrollCalculator->provisions->company->calculateOvertime = true;
 $payrollCalculator->provisions->company->calculateBPJSKesehatan = true; // Apakah perusahaan menyediakan BPJS Kesehatan / tidak untuk orang tersebut
 $payrollCalculator->provisions->company->calculateBPJSKetenagakerjaan = true; // Apakah perusahaan menyediakan BPJS Ketenagakerjaan / tidak untuk orang tersebut
-$payrollCalculator->provisions->company->riskGrad = 2; // Golongan resiko ketenagakerjaan, umumnya 2
+$payrollCalculator->provisions->company->riskGrade = 2; // Golongan resiko ketenagakerjaan, umumnya 2
 $payrollCalculator->provisions->company->absentPenalty = 55000; // Perhitungan nilai potongan gaji/hari sebagai penalty.
 $payrollCalculator->provisions->company->latetimePenalty = 100000; // Perhitungan nilai keterlambatan sebagai penalty.
 
@@ -64,7 +76,15 @@ $payrollCalculator->provisions->company->latetimePenalty = 100000; // Perhitunga
 $payrollCalculator->provisions->state->provinceMinimumWage = 3940972; // Ketentuan UMP sesuai propinsi lokasi perusahaan
 
 // Mengambil hasil perhitungan
-$payrollCalculator->getCalculation(); // Berupa array yang berisi seluruh data perhitungan gaji, lengkap dengan perhitungan BPJS dan PPh21
+$payrollCalculator->getCalculation(); // Berupa SplArrayObject yang berisi seluruh data perhitungan gaji, lengkap dengan perhitungan BPJS dan PPh21
+
+// Khusus Perhitungan PPH 23 -------
+$payrollCalculator->taxNumber = 23;
+$payrollCalculator->employee->hasNPWP = true;
+$payrollCalculator->employee->earnings->base = 8000000;
+
+// Mengambil hasil perhitungan
+$payrollCalculator->getCalculation(); // Berupa SplArrayObject yang berisi lengkap dengan perhitungan pajak
 ```
 
 Untuk keterangan lebih lengkap dapat dibaca di [Wiki](https://github.com/steevenz/id-payroll-calculator/wiki)

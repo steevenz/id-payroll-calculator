@@ -118,27 +118,51 @@ class State
     // ------------------------------------------------------------------------
 
     /**
-     * State::getPTKP
+     * State::getPtkp
      *
      * @param int $numOfDependentsFamily
+     * @param bool $married
+     *
+     * @return string
      */
-    public function getPTKP($numOfDependentsFamily)
+    public function getPtkp($numOfDependentsFamily, $married = false)
     {
         if ($numOfDependentsFamily >= 3) {
-            $PTKP = $this->listOfPTKP[ 'K/3' ];
+            return 'K/3';
         } elseif ($numOfDependentsFamily == 2) {
-            $PTKP = $this->listOfPTKP[ 'K/2' ];
+            return 'K/2';
         } elseif ($numOfDependentsFamily == 1) {
-            $PTKP = $this->listOfPTKP[ 'K/1' ];
-        } else {
-            $PTKP = $this->listOfPTKP[ 'TK/0' ];
-
-            if ($this->married !== false) {
-                $PTKP = $this->listOfPTKP[ 'K/0' ];
-            }
+            return 'K/1';
+        } elseif ($married !== false) {
+            return 'K/0';
         }
 
-        return $PTKP;
+        return 'TK/0';
+    }
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * State::getPtkpAmount
+     *
+     * @param int  $numOfDependentsFamily
+     * @param bool $married
+     *
+     * @return float
+     */
+    public function getPtkpAmount($numOfDependentsFamily, $married = false)
+    {
+        if ($numOfDependentsFamily >= 3) {
+            return $this->listOfPTKP[ 'K/3' ];
+        } elseif ($numOfDependentsFamily == 2) {
+            return $this->listOfPTKP[ 'K/2' ];
+        } elseif ($numOfDependentsFamily == 1) {
+            return $this->listOfPTKP[ 'K/1' ];
+        } elseif ($married !== false) {
+            return $this->listOfPTKP[ 'K/0' ];
+        }
+
+        return $this->listOfPTKP[ 'TK/0' ];
     }
 
     // ------------------------------------------------------------------------
@@ -189,29 +213,5 @@ class State
         }
 
         return 3;
-    }
-
-    // ------------------------------------------------------------------------
-
-    /**
-     * State::getPPh21Rate
-     *
-     * @param int $monthlyNetIncome
-     *
-     * @return float
-     */
-    public function getPPh21Rate($monthlyNetIncome)
-    {
-        $rate = (5/100);
-
-        if($monthlyNetIncome < 50000000 and $monthlyNetIncome > 250000000) {
-            $rate = (15/100);
-        } elseif($monthlyNetIncome > 250000000 and $monthlyNetIncome < 500000000) {
-            $rate = (25/100);
-        } elseif($monthlyNetIncome > 500000000) {
-            $rate = (30/100);
-        }
-
-        return $rate;
     }
 }

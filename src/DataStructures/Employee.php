@@ -69,6 +69,20 @@ class Employee
      */
     public $deductions;
 
+    /**
+     * Company::$calculateHolidayAllowance
+     *
+     * @var int
+     */
+    public $calculateHolidayAllowance = 0;
+
+    /**
+     * Employee::$bonus
+     *
+     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee\Bonus
+     */
+    public $bonus;
+
     // ------------------------------------------------------------------------
 
     /**
@@ -80,5 +94,6 @@ class Employee
         $this->earnings = new Employee\Earnings();
         $this->allowances = new Employee\Allowances();
         $this->deductions = new Employee\Deductions();
+        $this->bonus = new Employee\Bonus();
     }
 }

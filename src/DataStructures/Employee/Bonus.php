@@ -17,10 +17,10 @@ namespace Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee;
 use O2System\Spl\DataStructures\SplArrayObject;
 
 /**
- * Class Allowances
+ * Class Bonus
  * @package Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee
  */
-class Allowances extends SplArrayObject
+class Bonus extends SplArrayObject
 {
     
 }

@@ -28,6 +28,13 @@ class Company
     public $numOfWorkingDays = 25;
 
     /**
+     * Company::$calculateOvertime
+     *
+     * @var bool
+     */
+    public $calculateOvertime = true;
+
+    /**
      * Company::$calculateBPJSKesehatan
      *
      * @var bool

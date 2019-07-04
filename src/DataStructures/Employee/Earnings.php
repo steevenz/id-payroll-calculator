@@ -21,16 +21,30 @@ namespace Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee;
 class Earnings
 {
     /**
-     * Earnings::$basePay
+     * Earnings::$base
      *
      * @var int
      */
-    public $basePay = 0;
+    public $base = 0;
 
     /**
-     * Earnings::$overtimePay
+     * Earnings::$fixedAllowance
      *
      * @var int
      */
-    public $overtimePay = 0;
+    public $fixedAllowance = 0;
+
+    /**
+     * Earnings::$overtime
+     *
+     * @var int
+     */
+    public $overtime = 0;
+
+    /**
+     * Earnings::$holidayAllowance
+     *
+     * @var int
+     */
+    public $holidayAllowance = 0;
 }

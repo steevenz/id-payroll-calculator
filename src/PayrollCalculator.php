@@ -17,6 +17,8 @@ namespace Steevenz\IndonesiaPayrollCalculator;
 
 use O2System\Spl\DataStructures\SplArrayObject;
 use Steevenz\IndonesiaPayrollCalculator\DataStructures;
+use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph21;
+use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph23;
 
 /**
  * Class PayrollCalculator
@@ -24,6 +26,33 @@ use Steevenz\IndonesiaPayrollCalculator\DataStructures;
  */
 class PayrollCalculator
 {
+    /**
+     * PayrollCalculator::NETT_CALCULATION
+     *
+     * PPh 21 ditanggung oleh perusahaan atau penyedia kerja.
+     *
+     * @var string
+     */
+    const NETT_CALCULATION = 'NETT';
+
+    /**
+     * PayrollCalculator::GROSS_CALCULATION
+     *
+     * PPh 21 ditanggung oleh pekerja/karyawan.
+     *
+     * @var string
+     */
+    const GROSS_CALCULATION = 'GROSS';
+
+    /**
+     * PayrollCalculator::GROSS_UP_CALCULATION
+     *
+     * Tanggungan PPh 21 ditambahkan sebagai tunjangan pekerja/karyawan.
+     *
+     * @var string
+     */
+    const GROSS_UP_CALCULATION = 'GROSSUP';
+
     /**
      * PayrollCalculator::$provisions
      *
@@ -38,6 +67,27 @@ class PayrollCalculator
      */
     public $employee;
 
+    /**
+     * PayrollCalculator::$taxNumber
+     * 
+     * @var int 
+     */
+    public $taxNumber = 21;
+
+    /**
+     * PayrollCalculator::$method
+     *
+     * @var string
+     */
+    public $method = 'NETTO';
+
+    /**
+     * PayrollCalculator::$result
+     *
+     * @var SplArrayObject
+     */
+    public $result;
+
     // ------------------------------------------------------------------------
 
     /**
@@ -49,44 +99,82 @@ class PayrollCalculator
     {
         $this->provisions = new DataStructures\Provisions();
         $this->employee = new DataStructures\Employee();
+        $this->result = new SplArrayObject([
+            'earnings' => new SplArrayObject([
+                'base' => 0,
+                'fixedAllowance' => 0,
+                'annualy' => new SplArrayObject([
+                    'nett' => 0,
+                    'gross' => 0
+                ])
+            ]),
+            'takeHomePay' => 0
+        ]);
     }
 
     // ------------------------------------------------------------------------
-
-    /**
-     * PayrollCalculator::getDailyBasePay
-     */
-    public function getDailyBasePay()
-    {
-        return $this->employee->earnings->basePay / $this->provisions->company->numOfWorkingDays;
-    }
-
-    // ------------------------------------------------------------------------
-
+    
     /**
      * PayrollCalculator::getCalculation
+     *
+     * @return \O2System\Spl\DataStructures\SplArrayObject
      */
     public function getCalculation()
     {
-        // Calculate Basic Salary
-        $basePay = $this->getDailyBasePay() * $this->employee->presences->getCalculatedDays();
-        $absentPenalty = $this->employee->presences->absentDays * $this->provisions->company->absentPenalty;
-        $latetimePenalty = $this->employee->presences->latetime * $this->provisions->company->latetimePenalty;
+        if($this->taxNumber == 21) {
+            return $this->calculateBaseOnPph21();
+        } elseif($this->taxNumber == 23) {
+            return $this->calculateBaseOnPph23();
+        }
+    }
 
-        $basePay = $basePay - $absentPenalty - $latetimePenalty;
-        $overtime = $this->employee->earnings->overtimePay * $this->employee->presences->overtime;
+    // ------------------------------------------------------------------------
 
-        // Calculate Gross Total Income
-        $grossTotalIncome = $basePay + $overtime;
+    /**
+     * PayrollCalculator::calculateBaseOnPph21
+     *
+     * @return \O2System\Spl\DataStructures\SplArrayObject
+     */
+    private function calculateBaseOnPph21()
+    {
+        // Gaji + Penghasilan teratur
+        $this->result->earnings->base = ($this->employee->earnings->base / $this->provisions->company->numOfWorkingDays) * $this->employee->presences->workDays;
+        $this->result->earnings->fixedAllowance = $this->employee->earnings->fixedAllowance;
+
+        // Penghasilan bruto bulanan merupakan gaji pokok ditambah tunjangan tetap
+        $this->result->earnings->gross = $this->result->earnings->base + $this->employee->earnings->fixedAllowance;
+
+        if($this->employee->calculateHolidayAllowance > 0) {
+            $this->result->earnings->holidayAllowance = $this->employee->calculateHolidayAllowance * $this->result->earnings->gross;
+        }
+
+        // Penghasilan tidak teratur
+        if($this->provisions->company->calculateOvertime === true) {
+            //  Berdasarkan Kepmenakertrans No. 102/MEN/VI/2004
+            if($this->employee->presences->overtime > 1) {
+                $overtime1stHours = 1 * 1.5 * 1/173 * $this->result->earnings->gross;
+                $overtime2ndHours = ($this->employee->presences->overtime - 1) * 2 * 1/173 * $this->result->earnings->gross;
+                $this->result->earnings->overtime = $overtime1stHours + $overtime2ndHours;
+            } else {
+                $this->result->earnings->overtime = $this->employee->presences->overtime * 1.5 * 1/173 * $this->result->earnings->gross;
+            }
+
+            $this->result->earnings->overtime = floor($this->result->earnings->overtime);
+
+            // Lembur ditambahkan sebagai pendapatan bruto bulanan
+            $this->result->earnings->gross = $this->result->earnings->gross + $this->result->earnings->overtime;
+        }
+
+        $this->result->earnings->annualy->gross = $this->result->earnings->gross * 12;
 
         if ($this->provisions->company->calculateBPJSKesehatan === true) {
             // Calculate BPJS Kesehatan Allowance & Deduction
             if ($this->employee->allowances->count()) {
-                $this->employee->allowances->BPJSKesehatan = ($grossTotalIncome + array_sum($this->employee->allowances->getArrayCopy())) * (4 / 100);
-                $this->employee->deductions->BPJSKesehatan = ($grossTotalIncome + array_sum($this->employee->allowances->getArrayCopy())) * (1 / 100);
+                $this->employee->allowances->BPJSKesehatan = ($this->result->earnings->gross + $this->employee->allowances->getSum()) * (4 / 100);
+                $this->employee->deductions->BPJSKesehatan = ($this->result->earnings->gross + $this->employee->allowances->getSum()) * (1 / 100);
             } else {
-                $this->employee->allowances->BPJSKesehatan = $grossTotalIncome * (4 / 100);
-                $this->employee->deductions->BPJSKesehatan = $grossTotalIncome * (1 / 100);
+                $this->employee->allowances->BPJSKesehatan = $this->result->earnings->gross * (4 / 100);
+                $this->employee->deductions->BPJSKesehatan = $this->result->earnings->gross * (1 / 100);
             }
 
             // Maximum number of dependents family is 5
@@ -97,9 +185,9 @@ class PayrollCalculator
 
         // Calculate BPJS Ketenagakerjaan
         if($this->provisions->company->calculateBPJSKetenagakerjaan === true) {
-            if ($grossTotalIncome < $this->provisions->state->highestWage) {
+            if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
 
-                $this->employee->allowances->JKK = $grossTotalIncome * $this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade);
+                $this->employee->allowances->JKK = $this->result->earnings->gross * $this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade);
 
                 /**
                  * Perhitungan JKM
@@ -107,7 +195,7 @@ class PayrollCalculator
                  * Iuran jaminan kematian (JKM) sebesar 0,30% dari upah sebulan.
                  * Ditanggung sepenuhnya oleh perusahaan.
                  */
-                $this->employee->allowances->JKM = $grossTotalIncome * (0.30 / 100);
+                $this->employee->allowances->JKM = $this->result->earnings->gross * (0.30 / 100);
 
                 /**
                  * Perhitungan JHT
@@ -115,8 +203,8 @@ class PayrollCalculator
                  * Iuran jaminan hari tua (JHT) sebesar 5,7% dari upah sebulan,
                  * dengan ketentuan 3,7% ditanggung oleh pemberi kerja dan 2% ditanggung oleh pekerja.
                  */
-                $this->employee->allowances->JHT = $grossTotalIncome * (3.7 / 100);
-                $this->employee->deductions->JHT = $grossTotalIncome * (2 / 100);
+                $this->employee->allowances->JHT = $this->result->earnings->gross * (3.7 / 100);
+                $this->employee->deductions->JHT = $this->result->earnings->gross * (2 / 100);
 
                 /**
                  * Perhitungan JP
@@ -124,12 +212,11 @@ class PayrollCalculator
                  * Iuran jaminan pensiun (JP) sebesar 3% dari upah sebulan,
                  * dengan ketentuan 2% ditanggung oleh pemberi kerja dan 1% ditanggung oleh pekerja.
                  */
-                $this->employee->allowances->JIP = $grossTotalIncome * (2 / 100);
-                $this->employee->deductions->JIP = $grossTotalIncome * (1 / 100);
+                $this->employee->allowances->JIP = $this->result->earnings->gross * (2 / 100);
+                $this->employee->deductions->JIP = $this->result->earnings->gross * (1 / 100);
 
-            } elseif ($grossTotalIncome >= $this->provisions->state->provinceMinimumWage && $grossTotalIncome >= $this->provisions->state->highestWage) {
+            } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
                 $this->employee->allowances->JKK = $this->provisions->state->highestWage * $this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade);
-
 
                 /**
                  * Perhitungan JKM
@@ -163,77 +250,74 @@ class PayrollCalculator
             }
         }
 
-        // Re-calculate gross total income
-        $grossTotalIncome = $grossTotalIncome + array_sum($this->employee->allowances->getArrayCopy());
-
-        $this->employee->deductions->positions = 0;
-        if ($grossTotalIncome > $this->provisions->state->provinceMinimumWage) {
+        $monthlyPositionDeduction = 0;
+        if ($this->result->earnings->gross > $this->provisions->state->provinceMinimumWage) {
 
             /**
              * According to Undang-Undang Direktur Jenderal Pajak Nomor PER-32/PJ/2015 Pasal 21 ayat 3
-             * Position Deduction is 5% from Yearly Gross Income
+             * Position Deduction is 5% from Annual Gross Income
              */
-            $this->employee->deductions->positions = $grossTotalIncome * (5 / 100);
+            $monthlyPositionDeduction = $this->result->earnings->gross * (5 / 100);
 
             /**
              * Maximum Position Deduction in Indonesia is 500000 / month
              * or 6000000 / year
              */
-            if ($this->employee->deductions->positions >= 500000) {
-                $this->employee->deductions->positions = 500000;
+            if ($monthlyPositionDeduction >= 500000) {
+                $monthlyPositionDeduction = 500000;
             }
+
+            $this->employee->deductions->offsetSet('position', $monthlyPositionDeduction);
         }
 
-        // Calculate Monthly Net Income
-        if ($this->employee->deductions->count()) {
-            $monthlyNetIncome = $grossTotalIncome - array_sum($this->employee->deductions->getArrayCopy());
-        } else {
-            $monthlyNetIncome = $grossTotalIncome;
+        // Pendapatan bersih
+        $this->result->earnings->nett = $this->result->earnings->gross + $this->employee->allowances->count() - $this->employee->deductions->count();
+        $this->result->earnings->annualy->nett = $this->result->earnings->nett * 12;
+
+        $this->result->offsetSet('taxable', (new Pph21($this))->calculate());
+
+        switch ($this->method) {
+            // Pajak ditanggung oleh perusahaan
+            case self::NETT_CALCULATION:
+                $takeHomePay = $monthlyNetIncome;
+                break;
+            // Pajak ditanggung oleh karyawan
+            case self::GROSS_CALCULATION:
+                $takeHomePay = $monthlyNetIncome - $tax->liability->monthly;
+                $this->employee->deductions->offsetSet('PPH' . $this->taxNumber, $tax->result->liability->monthly);
+                break;
+            // Pajak ditanggung oleh perusahaan sebagai tunjangan pajak.
+            case self::GROSS_UP_CALCULATION:
+                $this->employee->allowances->offsetSet('PPH' . $this->taxNumber, $tax->result->liability->monthly);
+                $takeHomePay = $monthlyNetIncome;
+                break;
         }
 
-        $PTKP = 0;
-        $PKP = 0;
+        // Pengurangan Penalty
+        $this->employee->deductions->offsetSet('penalty', new SplArrayObject([
+            'late' => $this->employee->presences->latetime * $this->provisions->company->latetimePenalty,
+            'absent' => $this->employee->presences->absentDays * $this->provisions->company->absentPenalty
+        ]));
 
-        /**
-         * PPh21 dikenakan bagi yang memiliki penghasilan lebih dari 4500000
-         */
-        if($monthlyNetIncome > 4500000) {
-            // Calculate Yearly Net Income
-            $yearlyNetIncome = $monthlyNetIncome * 12;
+        $this->result->offsetSet('allowances', $this->employee->allowances);
+        $this->result->offsetSet('bonus', $this->employee->bonus);
+        $this->result->offsetSet('deductions', $this->employee->deductions);
 
-            // Yearly PTKP base on number of dependents family
-            $PTKP = $this->provisions->state->getPTKP($this->employee->numOfDependentsFamily);
-            $yearlyPKP = $yearlyNetIncome - $PTKP;
+        $this->result->takeHomePay = $this->result->earnings->nett - $this->employee->deductions->getSum();
 
-            if ($this->employee->maritalStatus === true) {
-                $yearlyPKP = $yearlyPKP - $this->provisions->state->additionalPTKPforMarriedEmployees;
-            }
-        }
+        return $this->result;
+    }
 
-        $yearlyPPh21 = $yearlyPKP * $this->provisions->state->getPPh21Rate($monthlyNetIncome);
+    // ------------------------------------------------------------------------
 
-        // Jika tidak memiliki NPWP dikenakan tambahan 20%
-        if($this->employee->hasNPWP === false) {
-            $yearlyPPh21 = $yearlyPKP * ($this->provisions->state->getPPh21Rate($monthlyNetIncome) + (20 /100));
-        }
-
-        $monthlyPPh21 = $yearlyPPh21 / 12;
-
-        $this->employee->deductions->PPh21 = $monthlyPPh21;
-
-        return new SplArrayObject([
-            'earnings' => new SplArrayObject([
-                'basePay' => $basePay,
-                'overtime' => $overtime,
-            ]),
-            'allowances' => $this->employee->allowances,
-            'deductions' => $this->employee->deductions,
-            'ownPTKP' => $PTKP,
-            'maritalPTKP' => $this->employee->maritalStatus ? $this->provisions->state->additionalPTKPforMarriedEmployees : 0,
-            'yearlyPKP' => $yearlyPKP,
-            'yearlyPPh21' => $yearlyPPh21,
-            'monthlyPPh21' => $monthlyPPh21,
-            'takeHomePay' => $monthlyNetIncome - $monthlyPPh21
-        ]);
+    /**
+     * PayrollCalculator::calculateBaseOnPph23
+     *
+     * @return \O2System\Spl\DataStructures\SplArrayObject
+     */
+    private function calculateBaseOnPph23()
+    {
+        $tax = new Pph23($this);
+        return $this->result;
     }
 }
