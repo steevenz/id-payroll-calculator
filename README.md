@@ -21,7 +21,7 @@ composer require steevenz/id-payroll-calculator
 Penggunaan
 ----------
 ```php
-use Steevenz\IndonesiaPayrollCalculator;
+use Steevenz\IndonesiaPayrollCalculator\PayrollCalculator;
 
 // Inisiasi class PayrollCalculator
 $payrollCalculator = new PayrollCalculator();
