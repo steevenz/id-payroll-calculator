@@ -35,6 +35,9 @@ $payrollCalculator = new PayrollCalculator();
 
 // Khusus Perhitungan PPH 21 -------
 
+// Calculation method
+$payrollCalculator->method = PayrollCalculator::NETT_CALCULATION;
+
 // Tax Number
 $payrollCalculator->taxNumber = 21;
 
