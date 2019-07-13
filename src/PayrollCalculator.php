@@ -271,7 +271,7 @@ class PayrollCalculator
         }
 
         // Pendapatan bersih
-        $this->result->earnings->nett = $this->result->earnings->gross + $this->employee->allowances->count() - $this->employee->deductions->count();
+        $this->result->earnings->nett = $this->result->earnings->gross + $this->employee->allowances->getSum() - $this->employee->deductions->getSum();
         $this->result->earnings->annualy->nett = $this->result->earnings->nett * 12;
 
         $this->result->offsetSet('taxable', (new Pph21($this))->calculate());
