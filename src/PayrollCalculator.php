@@ -270,40 +270,44 @@ class PayrollCalculator
             $this->employee->deductions->offsetSet('position', $monthlyPositionDeduction);
         }
 
+        // Set result allowances, bonus, deductions
+        $this->result->offsetSet('allowances', $this->employee->allowances);
+        $this->result->offsetSet('bonus', $this->employee->bonus);
+        $this->result->offsetSet('deductions', $this->employee->deductions);
+
         // Pendapatan bersih
-        $this->result->earnings->nett = $this->result->earnings->gross + $this->employee->allowances->getSum() - $this->employee->deductions->getSum();
+        $this->result->earnings->nett = $this->result->earnings->gross + $this->result->allowances->getSum() - $this->result->deductions->getSum();
         $this->result->earnings->annualy->nett = $this->result->earnings->nett * 12;
 
         $this->result->offsetSet('taxable', (new Pph21($this))->calculate());
-
-        switch ($this->method) {
-            // Pajak ditanggung oleh perusahaan
-            case self::NETT_CALCULATION:
-                $takeHomePay = $monthlyNetIncome;
-                break;
-            // Pajak ditanggung oleh karyawan
-            case self::GROSS_CALCULATION:
-                $takeHomePay = $monthlyNetIncome - $tax->liability->monthly;
-                $this->employee->deductions->offsetSet('PPH' . $this->taxNumber, $tax->result->liability->monthly);
-                break;
-            // Pajak ditanggung oleh perusahaan sebagai tunjangan pajak.
-            case self::GROSS_UP_CALCULATION:
-                $this->employee->allowances->offsetSet('PPH' . $this->taxNumber, $tax->result->liability->monthly);
-                $takeHomePay = $monthlyNetIncome;
-                break;
-        }
 
         // Pengurangan Penalty
         $this->employee->deductions->offsetSet('penalty', new SplArrayObject([
             'late' => $this->employee->presences->latetime * $this->provisions->company->latetimePenalty,
             'absent' => $this->employee->presences->absentDays * $this->provisions->company->absentPenalty
         ]));
+        
+        // Tunjangan Hari Raya
+        if($this->employee->earnings->holidayAllowance > 0) {
+            $this->result->allowances->offsetSet('holiday', $this->employee->earnings->holidayAllowance);
+        }
 
-        $this->result->offsetSet('allowances', $this->employee->allowances);
-        $this->result->offsetSet('bonus', $this->employee->bonus);
-        $this->result->offsetSet('deductions', $this->employee->deductions);
-
-        $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
+        switch ($this->method) {
+            // Pajak ditanggung oleh perusahaan
+            case self::NETT_CALCULATION:
+                $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
+                break;
+            // Pajak ditanggung oleh karyawan
+            case self::GROSS_CALCULATION:
+                $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum() - $this->result->taxable->liability->monthly;
+                $this->result->deductions->offsetSet('pph21', $this->result->taxable->liability->monthly);
+                break;
+            // Pajak ditanggung oleh perusahaan sebagai tunjangan pajak.
+            case self::GROSS_UP_CALCULATION:
+                $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
+                $this->employee->allowances->offsetSet('pph21', $this->result->taxable->liability->monthly);
+                break;
+        }
 
         return $this->result;
     }
@@ -317,7 +321,45 @@ class PayrollCalculator
      */
     private function calculateBaseOnPph23()
     {
-        $tax = new Pph23($this);
+        // Gaji + Penghasilan teratur
+        $this->result->earnings->base = $this->employee->earnings->base ;
+        $this->result->earnings->fixedAllowance = $this->employee->earnings->fixedAllowance;
+
+        // Penghasilan bruto bulanan merupakan gaji pokok ditambah tunjangan tetap
+        $this->result->earnings->gross = $this->result->earnings->base + $this->employee->earnings->fixedAllowance;
+
+        if($this->employee->calculateHolidayAllowance > 0) {
+            $this->result->earnings->holidayAllowance = $this->employee->calculateHolidayAllowance * $this->result->earnings->gross;
+        }
+
+        // Set result allowances, bonus, deductions
+        $this->result->offsetSet('allowances', $this->employee->allowances);
+        $this->result->offsetSet('bonus', $this->employee->bonus);
+        $this->result->offsetSet('deductions', $this->employee->deductions);
+
+        // Pendapatan bersih
+        $this->result->earnings->nett = $this->result->earnings->gross + $this->result->allowances->getSum() - $this->result->deductions->getSum();
+        $this->result->earnings->annualy->nett = $this->result->earnings->nett * 12;
+
+        $this->result->offsetSet('taxable', (new Pph23($this))->calculate());
+
+        switch ($this->method) {
+            // Pajak ditanggung oleh perusahaan
+            case self::NETT_CALCULATION:
+                $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum();
+                break;
+            // Pajak ditanggung oleh karyawan
+            case self::GROSS_CALCULATION:
+                $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->bonus->getSum()- $this->result->taxable->liability->amount;
+                $this->result->deductions->offsetSet('pph23', $this->result->taxable->liability->amount);
+                break;
+            // Pajak ditanggung oleh perusahaan sebagai tunjangan pajak.
+            case self::GROSS_UP_CALCULATION:
+                $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->bonus->getSum();
+                $this->employee->allowances->offsetSet('pph23', $this->result->taxable->liability->amount);
+                break;
+        }
+
         return $this->result;
     }
 }
