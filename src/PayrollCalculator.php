@@ -283,12 +283,12 @@ class PayrollCalculator
                 break;
             // Pajak ditanggung oleh karyawan
             case self::GROSS_CALCULATION:
-                $takeHomePay = $monthlyNetIncome - $tax->liability->monthly;
-                $this->employee->deductions->offsetSet('PPH' . $this->taxNumber, $tax->result->liability->monthly);
+                $takeHomePay = $monthlyNetIncome - $this->result->taxable->liability->monthly;
+                $this->employee->deductions->offsetSet('Pph21' . $this->taxNumber, $this->result->taxable->liability->monthly);
                 break;
             // Pajak ditanggung oleh perusahaan sebagai tunjangan pajak.
             case self::GROSS_UP_CALCULATION:
-                $this->employee->allowances->offsetSet('PPH' . $this->taxNumber, $tax->result->liability->monthly);
+                $this->employee->allowances->offsetSet('Pph21', $this->result->taxable->liability->monthly);
                 $takeHomePay = $monthlyNetIncome;
                 break;
         }
