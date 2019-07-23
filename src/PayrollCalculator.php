@@ -187,7 +187,7 @@ class PayrollCalculator
         if($this->provisions->company->calculateBPJSKetenagakerjaan === true) {
             if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
 
-                $this->employee->allowances->JKK = $this->result->earnings->gross * $this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade);
+                $this->employee->allowances->JKK = $this->result->earnings->gross * $this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade) * (0.24/100);
 
                 /**
                  * Perhitungan JKM
