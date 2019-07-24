@@ -33,7 +33,6 @@ class Pph21 extends AbstractPph
          */
         if($this->calculator->result->earnings->nett > 4500000) {
             // Annual PTKP base on number of dependents family
-            $this->result->ptkp->status = $this->calculator->provisions->state->getPtkp($this->calculator->employee->numOfDependentsFamily, $this->calculator->employee->maritalStatus);
             $this->result->ptkp->amount = $this->calculator->provisions->state->getPtkpAmount($this->calculator->employee->numOfDependentsFamily, $this->calculator->employee->maritalStatus);
 
             // Annual PKP (Pajak Atas Upah)

@@ -21,6 +21,13 @@ namespace Steevenz\IndonesiaPayrollCalculator\DataStructures;
 class Employee
 {
     /**
+     * Employee::$permanentStatus
+     *
+     * @var bool
+     */
+    public $permanentStatus = true;
+    
+    /**
      * Employee::$maritalStatus
      *
      * @var bool

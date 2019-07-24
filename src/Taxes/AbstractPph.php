@@ -50,7 +50,7 @@ abstract class AbstractPph
         $this->calculator =& $calculator;
         $this->result = new SplArrayObject([
             'ptkp' => new SplArrayObject([
-                'status' => 'TK/0',
+                'status' => $this->calculator->provisions->state->getPtkp($this->calculator->employee->numOfDependentsFamily, $this->calculator->employee->maritalStatus),
                 'amount' => 0
             ]),
             'pkp' => 0,
