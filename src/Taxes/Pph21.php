@@ -39,7 +39,7 @@ class Pph21 extends AbstractPph
             // Annual PKP (Pajak Atas Upah)
             if($this->calculator->employee->earnings->holidayAllowance > 0 && $this->calculator->employee->bonus->getSum() == 0) {
                 // Pajak Atas Upah
-                $earningTax = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount) * $this->getRate($this->calculator->result->earnings->nett);
+                $earningTax = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount) * ($this->getRate($this->calculator->result->earnings->nett) / 100);
 
                 // Penghasilan + THR Kena Pajak
                 $this->result->pkp = ($this->calculator->result->earnings->annualy->nett + $this->calculator->employee->earnings->holidayAllowance) - $this->result->ptkp->amount;

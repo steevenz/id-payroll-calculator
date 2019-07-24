@@ -7,6 +7,7 @@ Fitur
 -----
 * Perhitungan PPH21
 * Perhitungan PPH23
+* Perhitungan PPH26
 * Perhitungan Perpajakan Bonus dan Tunjangan Hari Raya
 
 Referensi
@@ -14,6 +15,7 @@ Referensi
 * [PPh21](https://www.online-pajak.com/perhitungan-pph-21)
 * [PTKP](https://www.online-pajak.com/ptkp-terbaru-pph-21)
 * [PPh23](https://www.online-pajak.com/perhitungan-pph-23)
+* [PPh26](https://www.online-pajak.com/perhitungan-pph-26)
 * [BPJS Kesehatan](https://www.panduanbpjs.com/iuran-bpjs-perbulan/)
 * [BPJS Ketenagakerjaan](https://www.finansialku.com/berapa-iuran-bpjs-ketenagakerjaan-yang-harus-saya-bayar-dan-yang-ditanggung-perusahaan/)
 * [UMP 2019](https://smartlegal.id/smarticle/layanan/2018/12/12/ini-daftar-upah-minimum-provinsi-ump-2019/)
@@ -90,6 +92,11 @@ $payrollCalculator->getCalculation(); // Berupa SplArrayObject yang berisi selur
 
 // Khusus Perhitungan PPH 23 -------
 $payrollCalculator->taxNumber = 23;
+$payrollCalculator->employee->hasNPWP = true;
+$payrollCalculator->employee->earnings->base = 8000000;
+
+// Khusus Perhitungan PPH 26 -------
+$payrollCalculator->taxNumber = 26;
 $payrollCalculator->employee->hasNPWP = true;
 $payrollCalculator->employee->earnings->base = 8000000;
 
