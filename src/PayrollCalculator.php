@@ -347,7 +347,9 @@ class PayrollCalculator
                     break;
                 // Pajak ditanggung oleh perusahaan sebagai tunjangan pajak.
                 case self::GROSS_UP_CALCULATION:
-                    $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum() - $monthlyPositionTax;
+                    $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
+                    $this->result->deductions->offsetSet('positionTax', $monthlyPositionTax);
+                    $this->result->deductions->offsetSet('pph21Tax', $this->result->taxable->liability->monthly);
                     $this->result->allowances->offsetSet('positionTax', $monthlyPositionTax);
                     $this->result->allowances->offsetSet('pph21Tax', $this->result->taxable->liability->monthly);
                     break;
