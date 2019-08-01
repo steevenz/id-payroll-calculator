@@ -54,7 +54,7 @@ class Pph21 extends AbstractPph
                 $this->result->liability->annual = $this->result->pkp - $earningTax;
             } else {
                 $this->result->pkp = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount);
-                $this->result->liability->annual = $this->result->pkp * $this->getRate($this->calculator->result->earnings->nett);
+                $this->result->liability->annual = $this->result->pkp * ($this->getRate($this->calculator->result->earnings->nett) / 100);
             }
 
             // Jika tidak memiliki NPWP dikenakan tambahan 20%
