@@ -320,6 +320,9 @@ class PayrollCalculator
             $this->result->earnings->annualy->nett = $this->result->earnings->nett * 12;
 
             $this->result->offsetSet('taxable', (new Pph21($this))->calculate());
+            $this->result->offsetSet('company', new SplArrayObject([
+                'allowances' => new SplArrayObject()
+            ]));
 
             // Pengurangan Penalty
             $this->employee->deductions->offsetSet('penalty', new SplArrayObject([
@@ -336,8 +339,8 @@ class PayrollCalculator
                 // Pajak ditanggung oleh perusahaan
                 case self::NETT_CALCULATION:
                     $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
-                    $this->result->allowances->offsetSet('positionTax', $monthlyPositionTax);
-                    $this->result->allowances->offsetSet('pph21Tax', $this->result->taxable->liability->monthly);
+                    $this->result->company->allowances->offsetSet('positionTax', $monthlyPositionTax);
+                    $this->result->company->allowances->offsetSet('pph21Tax', $this->result->taxable->liability->monthly);
                     break;
                 // Pajak ditanggung oleh karyawan
                 case self::GROSS_CALCULATION:
