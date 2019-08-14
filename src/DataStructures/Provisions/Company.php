@@ -42,12 +42,33 @@ class Company
     public $calculateBPJSKesehatan = true;
 
     /**
-     * Company::$calculateBPJSKetenagakerjaan
+     * Company::$JKK
+     * 
+     * @var bool 
+     */
+    public $JKK = false;
+
+    /**
+     * Company::$JKM
      *
      * @var bool
      */
-    public $calculateBPJSKetenagakerjaan = true;
+    public $JKM = false;
 
+    /**
+     * Company::$JHT
+     *
+     * @var bool
+     */
+    public $JHT = false;
+
+    /**
+     * Company::$JIP
+     *
+     * @var bool
+     */
+    public $JIP = false;
+    
     /**
      * Company::$riskGrade
      *
@@ -68,12 +89,4 @@ class Company
      * @var int
      */
     public $latetimePenalty = 0;
-
-    public $JKK = false;
-
-    public $JKM = false;
-
-    public $JHT = false;
-
-    public $JIP = false;
 }
