@@ -50,7 +50,7 @@ abstract class AbstractPph
         $this->calculator =& $calculator;
         $this->result = new SplArrayObject([
             'ptkp' => new SplArrayObject([
-                'status' => 'TK/0',
+                'status' => $this->calculator->provisions->state->getPtkp($this->calculator->employee->numOfDependentsFamily, $this->calculator->employee->maritalStatus),
                 'amount' => 0
             ]),
             'pkp' => 0,
@@ -73,14 +73,14 @@ abstract class AbstractPph
      */
     public function getRate($monthlyNetIncome)
     {
-        $rate = (5/100);
+        $rate = 5;
 
         if($monthlyNetIncome < 50000000 and $monthlyNetIncome > 250000000) {
-            $rate = (15/100);
+            $rate = 15;
         } elseif($monthlyNetIncome > 250000000 and $monthlyNetIncome < 500000000) {
-            $rate = (25/100);
+            $rate = 25;
         } elseif($monthlyNetIncome > 500000000) {
-            $rate = (30/100);
+            $rate = 30;
         }
 
         return $rate;

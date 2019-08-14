@@ -33,13 +33,12 @@ class Pph21 extends AbstractPph
          */
         if($this->calculator->result->earnings->nett > 4500000) {
             // Annual PTKP base on number of dependents family
-            $this->result->ptkp->status = $this->calculator->provisions->state->getPtkp($this->calculator->employee->numOfDependentsFamily, $this->calculator->employee->maritalStatus);
             $this->result->ptkp->amount = $this->calculator->provisions->state->getPtkpAmount($this->calculator->employee->numOfDependentsFamily, $this->calculator->employee->maritalStatus);
 
             // Annual PKP (Pajak Atas Upah)
             if($this->calculator->employee->earnings->holidayAllowance > 0 && $this->calculator->employee->bonus->getSum() == 0) {
                 // Pajak Atas Upah
-                $earningTax = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount) * $this->getRate($this->calculator->result->earnings->nett);
+                $earningTax = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount) * ($this->getRate($this->calculator->result->earnings->nett) / 100);
 
                 // Penghasilan + THR Kena Pajak
                 $this->result->pkp = ($this->calculator->result->earnings->annualy->nett + $this->calculator->employee->earnings->holidayAllowance) - $this->result->ptkp->amount;
@@ -47,7 +46,7 @@ class Pph21 extends AbstractPph
                 $this->result->liability->annual = $this->result->pkp - $earningTax;
             } elseif($this->calculator->employee->earnings->holidayAllowance > 0 && $this->calculator->employee->bonus->getSum() > 0) {
                 // Pajak Atas Upah
-                $earningTax = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount) * $this->getRate($this->calculator->result->earnings->nett);
+                $earningTax = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount) * ($this->getRate($this->calculator->result->earnings->nett) / 100);
 
                 // Penghasilan + THR Kena Pajak
                 $this->result->pkp = ($this->calculator->result->earnings->annualy->nett + $this->calculator->employee->earnings->holidayAllowance + $this->calculator->employee->bonus->getSum()) - $this->result->ptkp->amount;
@@ -55,7 +54,7 @@ class Pph21 extends AbstractPph
                 $this->result->liability->annual = $this->result->pkp - $earningTax;
             } else {
                 $this->result->pkp = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount);
-                $this->result->liability->annual = $this->result->pkp * $this->getRate($this->calculator->result->earnings->nett);
+                $this->result->liability->annual = $this->result->pkp * ($this->getRate($this->calculator->result->earnings->nett) / 100);
             }
 
             // Jika tidak memiliki NPWP dikenakan tambahan 20%

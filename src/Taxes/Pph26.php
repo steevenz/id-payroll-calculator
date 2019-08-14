@@ -16,23 +16,23 @@ namespace Steevenz\IndonesiaPayrollCalculator\Taxes;
 use O2System\Spl\DataStructures\SplArrayObject;
 
 /**
- * Class Pph23
+ * Class Pph26
  * @package Steevenz\IndonesiaPayrollCalculator\Taxes
  */
-class Pph23 extends AbstractPph
+class Pph26 extends AbstractPph
 {
     /**
-     * Pph23::calculate
+     * Pph26::calculate
      *
      * @return \O2System\Spl\DataStructures\SplArrayObject
      */
     public function calculate()
     {
         $this->result->offsetSet('liability', new SplArrayObject([
-            'rule' => 23,
+            'rule' => 26,
             'amount' => 0
         ]));
-        $this->result->liability->amount = $this->calculator->employee->earnings->base * ($this->getRate($this->calculator->employee->earnings->base) / 100);
+        $this->result->liability->amount = $this->calculator->employee->earnings->base * (20 / 100);
 
         // Jika tidak memiliki NPWP dikenakan tambahan 100%
         if($this->calculator->employee->hasNPWP === false) {
