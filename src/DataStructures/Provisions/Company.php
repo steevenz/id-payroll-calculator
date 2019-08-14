@@ -68,4 +68,12 @@ class Company
      * @var int
      */
     public $latetimePenalty = 0;
+
+    public $JKK = false;
+
+    public $JKM = false;
+
+    public $JHT = false;
+
+    public $JIP = false;
 }

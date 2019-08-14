@@ -70,8 +70,8 @@ class PayrollCalculator
 
     /**
      * PayrollCalculator::$taxNumber
-     * 
-     * @var int 
+     *
+     * @var int
      */
     public $taxNumber = 21;
 
@@ -101,20 +101,20 @@ class PayrollCalculator
         $this->provisions = new DataStructures\Provisions();
         $this->employee = new DataStructures\Employee();
         $this->result = new SplArrayObject([
-            'earnings' => new SplArrayObject([
-                'base' => 0,
+            'earnings'    => new SplArrayObject([
+                'base'           => 0,
                 'fixedAllowance' => 0,
-                'annualy' => new SplArrayObject([
-                    'nett' => 0,
-                    'gross' => 0
-                ])
+                'annualy'        => new SplArrayObject([
+                    'nett'  => 0,
+                    'gross' => 0,
+                ]),
             ]),
-            'takeHomePay' => 0
+            'takeHomePay' => 0,
         ]);
     }
 
     // ------------------------------------------------------------------------
-    
+
     /**
      * PayrollCalculator::getCalculation
      *
@@ -122,11 +122,11 @@ class PayrollCalculator
      */
     public function getCalculation()
     {
-        if($this->taxNumber == 21) {
+        if ($this->taxNumber == 21) {
             return $this->calculateBaseOnPph21();
-        } elseif($this->taxNumber == 23) {
+        } elseif ($this->taxNumber == 23) {
             return $this->calculateBaseOnPph23();
-        } elseif($this->taxNumber == 26) {
+        } elseif ($this->taxNumber == 26) {
             return $this->calculateBaseOnPph26();
         }
     }
@@ -147,19 +147,19 @@ class PayrollCalculator
         // Penghasilan bruto bulanan merupakan gaji pokok ditambah tunjangan tetap
         $this->result->earnings->gross = $this->result->earnings->base + $this->employee->earnings->fixedAllowance;
 
-        if($this->employee->calculateHolidayAllowance > 0) {
+        if ($this->employee->calculateHolidayAllowance > 0) {
             $this->result->earnings->holidayAllowance = $this->employee->calculateHolidayAllowance * $this->result->earnings->gross;
         }
 
         // Penghasilan tidak teratur
-        if($this->provisions->company->calculateOvertime === true) {
+        if ($this->provisions->company->calculateOvertime === true) {
             //  Berdasarkan Kepmenakertrans No. 102/MEN/VI/2004
-            if($this->employee->presences->overtime > 1) {
-                $overtime1stHours = 1 * 1.5 * 1/173 * $this->result->earnings->gross;
-                $overtime2ndHours = ($this->employee->presences->overtime - 1) * 2 * 1/173 * $this->result->earnings->gross;
+            if ($this->employee->presences->overtime > 1) {
+                $overtime1stHours = 1 * 1.5 * 1 / 173 * $this->result->earnings->gross;
+                $overtime2ndHours = ($this->employee->presences->overtime - 1) * 2 * 1 / 173 * $this->result->earnings->gross;
                 $this->result->earnings->overtime = $overtime1stHours + $overtime2ndHours;
             } else {
-                $this->result->earnings->overtime = $this->employee->presences->overtime * 1.5 * 1/173 * $this->result->earnings->gross;
+                $this->result->earnings->overtime = $this->employee->presences->overtime * 1.5 * 1 / 173 * $this->result->earnings->gross;
             }
 
             $this->result->earnings->overtime = floor($this->result->earnings->overtime);
@@ -169,14 +169,14 @@ class PayrollCalculator
         }
 
         $this->result->earnings->annualy->gross = $this->result->earnings->gross * 12;
-        
-        if($this->employee->permanentStatus === false) {
+
+        if ($this->employee->permanentStatus === false) {
             $this->employee->allowances->BPJSKesehatan = 0;
             $this->employee->deductions->BPJSKesehatan = 0;
-            
+
             $this->employee->allowances->JKK = 0;
             $this->employee->allowances->JKM = 0;
-            
+
             $this->employee->allowances->JHT = 0;
             $this->employee->deductions->JHT = 0;
 
@@ -196,12 +196,12 @@ class PayrollCalculator
 
             // Pengurangan Penalty
             $this->employee->deductions->offsetSet('penalty', new SplArrayObject([
-                'late' => $this->employee->presences->latetime * $this->provisions->company->latetimePenalty,
-                'absent' => $this->employee->presences->absentDays * $this->provisions->company->absentPenalty
+                'late'   => $this->employee->presences->latetime * $this->provisions->company->latetimePenalty,
+                'absent' => $this->employee->presences->absentDays * $this->provisions->company->absentPenalty,
             ]));
 
             // Tunjangan Hari Raya
-            if($this->employee->earnings->holidayAllowance > 0) {
+            if ($this->employee->earnings->holidayAllowance > 0) {
                 $this->result->allowances->offsetSet('holiday', $this->employee->earnings->holidayAllowance);
             }
 
@@ -225,68 +225,37 @@ class PayrollCalculator
                 }
             }
 
-            // Calculate BPJS Ketenagakerjaan
-            if($this->provisions->company->calculateBPJSKetenagakerjaan === true) {
+            if ($this->provisions->company->JKK === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
-
                     $this->employee->allowances->JKK = $this->result->earnings->gross * ($this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade) / 100);
-
-                    /**
-                     * Perhitungan JKM
-                     *
-                     * Iuran jaminan kematian (JKM) sebesar 0,30% dari upah sebulan.
-                     * Ditanggung sepenuhnya oleh perusahaan.
-                     */
-                    $this->employee->allowances->JKM = $this->result->earnings->gross * (0.30 / 100);
-
-                    /**
-                     * Perhitungan JHT
-                     *
-                     * Iuran jaminan hari tua (JHT) sebesar 5,7% dari upah sebulan,
-                     * dengan ketentuan 3,7% ditanggung oleh pemberi kerja dan 2% ditanggung oleh pekerja.
-                     */
-                    $this->employee->allowances->JHT = $this->result->earnings->gross * (3.7 / 100);
-                    $this->employee->deductions->JHT = $this->result->earnings->gross * (2 / 100);
-
-                    /**
-                     * Perhitungan JP
-                     *
-                     * Iuran jaminan pensiun (JP) sebesar 3% dari upah sebulan,
-                     * dengan ketentuan 2% ditanggung oleh pemberi kerja dan 1% ditanggung oleh pekerja.
-                     */
-                    $this->employee->allowances->JIP = $this->result->earnings->gross * (2 / 100);
-                    $this->employee->deductions->JIP = $this->result->earnings->gross * (1 / 100);
-
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
                     $this->employee->allowances->JKK = $this->provisions->state->highestWage * $this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade);
+                }
+            }
 
-                    /**
-                     * Perhitungan JKM
-                     *
-                     * Iuran jaminan kematian (JKM) sebesar 0,30% dari upah sebulan.
-                     * Ditanggung sepenuhnya oleh perusahaan.
-                     */
+            if ($this->provisions->company->JKM === true) {
+                if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
+                    $this->employee->allowances->JKM = $this->result->earnings->gross * (0.30 / 100);
+                } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
                     $this->employee->allowances->JKM = $this->provisions->state->highestWage * (0.30 / 100);
+                }
+            }
 
-                    /**
-                     * Perhitungan JHT
-                     *
-                     * Iuran jaminan hari tua (JHT) sebesar 5,7% dari upah sebulan,
-                     * dengan ketentuan 3,7% ditanggung oleh pemberi kerja dan 2% ditanggung oleh pekerja.
-                     *
-                     * Dihitung dari batas nilai upah bulanan tertinggi, karena total income melebihi UMP.
-                     */
+            if ($this->provisions->company->JHT === true) {
+                if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
+                    $this->employee->allowances->JHT = $this->result->earnings->gross * (3.7 / 100);
+                    $this->employee->deductions->JHT = $this->result->earnings->gross * (2 / 100);
+                } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
                     $this->employee->allowances->JHT = $this->provisions->state->highestWage * (3.7 / 100);
                     $this->employee->deductions->JHT = $this->provisions->state->highestWage * (2 / 100);
+                }
+            }
 
-                    /**
-                     * Perhitungan JIP
-                     *
-                     * Iuran jaminan pensiun (JIP) sebesar 3% dari upah sebulan,
-                     * dengan ketentuan 2% ditanggung oleh pemberi kerja dan 1% ditanggung oleh pekerja.
-                     *
-                     * Maximum Perhitungan total income jaminan pensiun adalah 7.000.000
-                     */
+            if ($this->provisions->company->JIP === true) {
+                if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
+                    $this->employee->allowances->JIP = $this->result->earnings->gross * (2 / 100);
+                    $this->employee->deductions->JIP = $this->result->earnings->gross * (1 / 100);
+                } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
                     $this->employee->allowances->JIP = 7000000 * (2 / 100);
                     $this->employee->deductions->JIP = 7000000 * (1 / 100);
                 }
@@ -321,17 +290,17 @@ class PayrollCalculator
 
             $this->result->offsetSet('taxable', (new Pph21($this))->calculate());
             $this->result->offsetSet('company', new SplArrayObject([
-                'allowances' => new SplArrayObject()
+                'allowances' => new SplArrayObject(),
             ]));
 
             // Pengurangan Penalty
             $this->employee->deductions->offsetSet('penalty', new SplArrayObject([
-                'late' => $this->employee->presences->latetime * $this->provisions->company->latetimePenalty,
-                'absent' => $this->employee->presences->absentDays * $this->provisions->company->absentPenalty
+                'late'   => $this->employee->presences->latetime * $this->provisions->company->latetimePenalty,
+                'absent' => $this->employee->presences->absentDays * $this->provisions->company->absentPenalty,
             ]));
 
             // Tunjangan Hari Raya
-            if($this->employee->earnings->holidayAllowance > 0) {
+            if ($this->employee->earnings->holidayAllowance > 0) {
                 $this->result->allowances->offsetSet('holiday', $this->employee->earnings->holidayAllowance);
             }
 
@@ -340,7 +309,8 @@ class PayrollCalculator
                 case self::NETT_CALCULATION:
                     $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
                     $this->result->company->allowances->offsetSet('positionTax', $monthlyPositionTax);
-                    $this->result->company->allowances->offsetSet('pph21Tax', $this->result->taxable->liability->monthly);
+                    $this->result->company->allowances->offsetSet('pph21Tax',
+                        $this->result->taxable->liability->monthly);
                     break;
                 // Pajak ditanggung oleh karyawan
                 case self::GROSS_CALCULATION:
@@ -372,13 +342,13 @@ class PayrollCalculator
     private function calculateBaseOnPph23()
     {
         // Gaji + Penghasilan teratur
-        $this->result->earnings->base = $this->employee->earnings->base ;
+        $this->result->earnings->base = $this->employee->earnings->base;
         $this->result->earnings->fixedAllowance = $this->employee->earnings->fixedAllowance;
 
         // Penghasilan bruto bulanan merupakan gaji pokok ditambah tunjangan tetap
         $this->result->earnings->gross = $this->result->earnings->base + $this->employee->earnings->fixedAllowance;
 
-        if($this->employee->calculateHolidayAllowance > 0) {
+        if ($this->employee->calculateHolidayAllowance > 0) {
             $this->result->earnings->holidayAllowance = $this->employee->calculateHolidayAllowance * $this->result->earnings->gross;
         }
 
@@ -400,7 +370,7 @@ class PayrollCalculator
                 break;
             // Pajak ditanggung oleh karyawan
             case self::GROSS_CALCULATION:
-                $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->bonus->getSum()- $this->result->taxable->liability->amount;
+                $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->bonus->getSum() - $this->result->taxable->liability->amount;
                 $this->result->deductions->offsetSet('pph23Tax', $this->result->taxable->liability->amount);
                 break;
             // Pajak ditanggung oleh perusahaan sebagai tunjangan pajak.
@@ -423,13 +393,13 @@ class PayrollCalculator
     private function calculateBaseOnPph26()
     {
         // Gaji + Penghasilan teratur
-        $this->result->earnings->base = $this->employee->earnings->base ;
+        $this->result->earnings->base = $this->employee->earnings->base;
         $this->result->earnings->fixedAllowance = $this->employee->earnings->fixedAllowance;
 
         // Penghasilan bruto bulanan merupakan gaji pokok ditambah tunjangan tetap
         $this->result->earnings->gross = $this->result->earnings->base + $this->employee->earnings->fixedAllowance;
 
-        if($this->employee->calculateHolidayAllowance > 0) {
+        if ($this->employee->calculateHolidayAllowance > 0) {
             $this->result->earnings->holidayAllowance = $this->employee->calculateHolidayAllowance * $this->result->earnings->gross;
         }
 
