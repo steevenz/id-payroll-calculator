@@ -141,7 +141,7 @@ class PayrollCalculator
     private function calculateBaseOnPph21()
     {
         // Gaji + Penghasilan teratur
-        $this->result->earnings->base =  $this->employee->earnings->base;
+        $this->result->earnings->base = $this->employee->earnings->base;
         $this->result->earnings->fixedAllowance = $this->employee->earnings->fixedAllowance;
 
         // Penghasilan bruto bulanan merupakan gaji pokok ditambah tunjangan tetap
@@ -287,7 +287,7 @@ class PayrollCalculator
             // set deduction presence if not presence
             $unWork = $this->provisions->company->numOfWorkingDays - $this->employee->presences->workDays;
 
-            if($unWork > 0){
+            if ($unWork > 0) {
                 $this->result->deductions->offsetSet('presence',
                     $this->employee->earnings->base / $this->provisions->company->numOfWorkingDays * $unWork
                 );
@@ -430,7 +430,7 @@ class PayrollCalculator
                 break;
             // Pajak ditanggung oleh karyawan
             case self::GROSS_CALCULATION:
-                $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->bonus->getSum()- $this->result->taxable->liability->amount;
+                $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->bonus->getSum() - $this->result->taxable->liability->amount;
                 $this->result->deductions->offsetSet('pph26Tax', $this->result->taxable->liability->amount);
                 break;
             // Pajak ditanggung oleh perusahaan sebagai tunjangan pajak.
