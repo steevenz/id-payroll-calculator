@@ -141,7 +141,7 @@ class PayrollCalculator
     private function calculateBaseOnPph21()
     {
         // Gaji + Penghasilan teratur
-        $this->result->earnings->base = ($this->employee->earnings->base / $this->provisions->company->numOfWorkingDays) * $this->employee->presences->workDays;
+        $this->result->earnings->base =  $this->employee->earnings->base;
         $this->result->earnings->fixedAllowance = $this->employee->earnings->fixedAllowance;
 
         // Penghasilan bruto bulanan merupakan gaji pokok ditambah tunjangan tetap
@@ -283,6 +283,15 @@ class PayrollCalculator
             $this->result->offsetSet('allowances', $this->employee->allowances);
             $this->result->offsetSet('bonus', $this->employee->bonus);
             $this->result->offsetSet('deductions', $this->employee->deductions);
+
+            // set deduction presence if not presence
+            $unWork = $this->provisions->company->numOfWorkingDays - $this->employee->presences->workDays;
+
+            if($unWork > 0){
+                $this->result->deductions->offsetSet('presence',
+                    $this->employee->earnings->base / $this->provisions->company->numOfWorkingDays * $unWork
+                );
+            }
 
             // Pendapatan bersih
             $this->result->earnings->nett = $this->result->earnings->gross + $this->result->allowances->getSum() - $this->result->deductions->getSum();
