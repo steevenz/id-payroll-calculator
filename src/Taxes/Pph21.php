@@ -50,19 +50,23 @@ class Pph21 extends AbstractPph
 
                 // Penghasilan + THR Kena Pajak
                 $this->result->pkp = ($this->calculator->result->earnings->annualy->nett + $this->calculator->employee->earnings->holidayAllowance + $this->calculator->employee->bonus->getSum()) - $this->result->ptkp->amount;
-
                 $this->result->liability->annual = $this->result->pkp - $earningTax;
             } else {
-                $this->result->pkp = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount);
+                $this->result->pkp = $this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount;
                 $this->result->liability->annual = $this->result->pkp * ($this->getRate($this->calculator->result->earnings->nett) / 100);
             }
+            
+            if($this->result->liability->annual > 0) {
+                // Jika tidak memiliki NPWP dikenakan tambahan 20%
+                if($this->calculator->employee->hasNPWP === false) {
+                    $this->result->liability->annual = $this->result->liability->annual + ($this->result->liability->annual * (20/100));
+                }
 
-            // Jika tidak memiliki NPWP dikenakan tambahan 20%
-            if($this->calculator->employee->hasNPWP === false) {
-                $this->result->liability->annual = $this->result->liability->annual + ($this->result->pkp->annual * (20/100));
+                $this->result->liability->monthly = $this->result->liability->annual / 12;
+            } else {
+                $this->result->liability->annual = 0;
+                $this->result->liability->monthly = 0;
             }
-
-            $this->result->liability->monthly = $this->result->liability->annual / 12;
         }
         
         return $this->result;
