@@ -22,6 +22,13 @@ namespace Steevenz\IndonesiaPayrollCalculator\DataStructures\Provisions;
 class State
 {
     /**
+     * State::$overtimeRegulationCalculation
+     * 
+     * @var bool 
+     */
+    public $overtimeRegulationCalculation = true;
+    
+    /**
      * State::$provinceMinimumWage
      *
      * @var int

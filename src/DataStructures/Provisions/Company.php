@@ -28,11 +28,25 @@ class Company
     public $numOfWorkingDays = 25;
 
     /**
+     * Company::$numOfWorkingTimes
+     *
+     * @var int
+     */
+    public $numOfWorkingTimes = 8;
+
+    /**
      * Company::$calculateOvertime
      *
      * @var bool
      */
     public $calculateOvertime = true;
+
+    /**
+     * Company::$overtimeRate
+     * 
+     * @var int 
+     */
+    public $overtimeRate = 0;
 
     /**
      * Company::$calculateSplitShifts

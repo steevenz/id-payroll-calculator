@@ -153,13 +153,21 @@ class PayrollCalculator
 
         // Penghasilan tidak teratur
         if ($this->provisions->company->calculateOvertime === true) {
-            //  Berdasarkan Kepmenakertrans No. 102/MEN/VI/2004
-            if ($this->employee->presences->overtime > 1) {
-                $overtime1stHours = 1 * 1.5 * 1 / 173 * $this->result->earnings->gross;
-                $overtime2ndHours = ($this->employee->presences->overtime - 1) * 2 * 1 / 173 * $this->result->earnings->gross;
-                $this->result->earnings->overtime = $overtime1stHours + $overtime2ndHours;
+            if($this->provisions->state->overtimeRegulationCalculation) {
+                //  Berdasarkan Kepmenakertrans No. 102/MEN/VI/2004
+                if ($this->employee->presences->overtime > 1) {
+                    $overtime1stHours = 1 * 1.5 * 1 / 173 * $this->result->earnings->gross;
+                    $overtime2ndHours = ($this->employee->presences->overtime - 1) * 2 * 1 / 173 * $this->result->earnings->gross;
+                    $this->result->earnings->overtime = $overtime1stHours + $overtime2ndHours;
+                } else {
+                    $this->result->earnings->overtime = $this->employee->presences->overtime * 1.5 * 1 / 173 * $this->result->earnings->gross;
+                }
             } else {
-                $this->result->earnings->overtime = $this->employee->presences->overtime * 1.5 * 1 / 173 * $this->result->earnings->gross;
+                if($this->provisions->company->overtimeRate > 0) {
+                    $this->provisions->company->overtimeRate = floor($this->employee->presences->overtime / $this->provisions->company->numOfWorkingDays / $this->provisions->company->numOfWorkingTimes);
+                }
+
+                $this->result->earnings->overtime = $this->employee->presences->overtime * $this->provisions->company->overtimeRate;
             }
 
             $this->result->earnings->overtime = floor($this->result->earnings->overtime);

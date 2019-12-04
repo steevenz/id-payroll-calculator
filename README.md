@@ -54,7 +54,6 @@ $payrollCalculator->employee->numOfDependentsFamily = 0; // Jumlah tanggungan, m
 // Set data pendapatan karyawan
 $payrollCalculator->employee->earnings->base = 8000000; // Besaran nilai gaji pokok/bulan
 $payrollCalculator->employee->earnings->fixedAllowance = 0; // Besaran nilai tunjangan tetap
-$payrollCalculator->employee->earnings->overtime = 10000; // Besaran nilai uang lembur/jam
 $payrollCalculator->employee->calculateHolidayAllowance = 0; // jumlah bulan proporsional
 // NOTE: besaran nilai diatas bukan nilai hasil proses perhitungan absensi tetapi nilai default sebagai faktor perhitungan gaji.
 
@@ -79,9 +78,17 @@ $payrollCalculator->employee->deductions->offsetSet('kasbon', 100000);
 $payrollCalculator->employee->bonus->offsetSet('serviceCharge', 100000);
 // NOTE: Jumlah bonus tidak ada batasan
 
+// Set data ketentuan negara
+$payrollCalculator->provisions->state->overtimeRegulationCalculation = true; // Jika false maka akan dihitung sesuai kebijakan perusahaan
+$payrollCalculator->provisions->state->provinceMinimumWage = 3940972; // Ketentuan UMP sesuai propinsi lokasi perusahaan
+
 // Set data ketentuan perusahaan
 $payrollCalculator->provisions->company->numOfWorkingDays = 25; // Jumlah hari kerja dalam satu bulan
 $payrollCalculator->provisions->company->calculateOvertime = true; // Apakah perusahaan menghitung lembur
+
+// Jika $payrollCalculator->provisions->state->overtimeRegulationCalculation = false;
+$payrollCalculator->provisions->company->overtimeRate = 10000 // Jika bernilai 0 namun $payrollCalculator->provisions->company->calculateOvertime, maka rate akan dihitung secara otomatis berdasarkan renumerasi besaran gaji, hari dan jam kerja
+
 $payrollCalculator->provisions->company->calculateSplitShifts = true; // Apakah perusahan menghitung split shifts
 $payrollCalculator->provisions->company->splitShiftsRate = 25000; // Rate Split Shift perusahaan
 $payrollCalculator->provisions->company->calculateBPJSKesehatan = true; // Apakah perusahaan menyediakan BPJS Kesehatan / tidak untuk orang tersebut
@@ -95,9 +102,6 @@ $payrollCalculator->provisions->company->JIP = true;
 $payrollCalculator->provisions->company->riskGrade = 2; // Golongan resiko ketenagakerjaan, umumnya 2
 $payrollCalculator->provisions->company->absentPenalty = 55000; // Perhitungan nilai potongan gaji/hari sebagai penalty.
 $payrollCalculator->provisions->company->latetimePenalty = 100000; // Perhitungan nilai keterlambatan sebagai penalty.
-
-// Set data ketentuan negara
-$payrollCalculator->provisions->state->provinceMinimumWage = 3940972; // Ketentuan UMP sesuai propinsi lokasi perusahaan
 
 // Mengambil hasil perhitungan
 $payrollCalculator->getCalculation(); // Berupa SplArrayObject yang berisi seluruh data perhitungan gaji, lengkap dengan perhitungan BPJS dan PPh21
