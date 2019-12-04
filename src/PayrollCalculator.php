@@ -164,7 +164,7 @@ class PayrollCalculator
                 }
             } else {
                 if($this->provisions->company->overtimeRate > 0) {
-                    $this->provisions->company->overtimeRate = floor($this->employee->presences->overtime / $this->provisions->company->numOfWorkingDays / $this->provisions->company->numOfWorkingTimes);
+                    $this->provisions->company->overtimeRate = floor($this->employee->presences->overtime / $this->provisions->company->numOfWorkingDays / $this->provisions->company->numOfWorkingHours);
                 }
 
                 $this->result->earnings->overtime = $this->employee->presences->overtime * $this->provisions->company->overtimeRate;
