@@ -9,6 +9,8 @@ Fitur
 * Perhitungan PPH23
 * Perhitungan PPH26
 * Perhitungan Perpajakan Bonus dan Tunjangan Hari Raya
+* Perhitungan Overtime sesuai ketentuan
+* Perhitungan Split Shift
 
 Referensi
 ---------
@@ -63,6 +65,7 @@ $payrollCalculator->employee->presences->latetime = 0; //  perhitungan jumlah ke
 $payrollCalculator->employee->presences->travelDays = 0; //  perhitungan jumlah hari kepergian dinas
 $payrollCalculator->employee->presences->indisposedDays = 0; //  perhitungan jumlah hari sakit yang telah memiliki surat dokter
 $payrollCalculator->employee->presences->absentDays = 0; //  perhitungan jumlah hari alpha
+$payrollCalculator->employee->presences->splitShifts = 0; // perhitungan jumlah split shift
 
 // Set data tunjangan karyawan diluar tunjangan BPJS Kesehatan dan Ketenagakerjaan
 $payrollCalculator->employee->allowances->offsetSet('tunjanganMakan', 100000);
@@ -78,7 +81,9 @@ $payrollCalculator->employee->bonus->offsetSet('serviceCharge', 100000);
 
 // Set data ketentuan perusahaan
 $payrollCalculator->provisions->company->numOfWorkingDays = 25; // Jumlah hari kerja dalam satu bulan
-$payrollCalculator->provisions->company->calculateOvertime = true;
+$payrollCalculator->provisions->company->calculateOvertime = true; // Apakah perusahaan menghitung lembur
+$payrollCalculator->provisions->company->calculateSplitShifts = true; // Apakah perusahan menghitung split shifts
+$payrollCalculator->provisions->company->splitShiftsRate = 25000; // Rate Split Shift perusahaan
 $payrollCalculator->provisions->company->calculateBPJSKesehatan = true; // Apakah perusahaan menyediakan BPJS Kesehatan / tidak untuk orang tersebut
 
 // Apakah perusahaan menyediakan BPJS Ketenagakerjaan / tidak untuk orang tersebut

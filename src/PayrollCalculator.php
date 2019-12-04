@@ -167,6 +167,13 @@ class PayrollCalculator
             // Lembur ditambahkan sebagai pendapatan bruto bulanan
             $this->result->earnings->gross = $this->result->earnings->gross + $this->result->earnings->overtime;
         }
+        
+        if($this->provisions->company->calculateSplitShifts) {
+            $this->result->earnings->splitShifts = $this->provisions->company->splitShiftsRate * $this->employee->presences->splitShifts;
+
+            // Split Shift ditambahkan sebagai pendapatan bruto bulanan
+            $this->result->earnings->gross = $this->result->earnings->gross + $this->result->earnings->splitShifts;
+        }
 
         $this->result->earnings->annualy->gross = $this->result->earnings->gross * 12;
 

@@ -42,6 +42,13 @@ class Earnings
     public $overtime = 0;
 
     /**
+     * Earnings::$splitShifts
+     *
+     * @var int
+     */
+    public $splitShifts = 0;
+
+    /**
      * Earnings::$holidayAllowance
      *
      * @var int

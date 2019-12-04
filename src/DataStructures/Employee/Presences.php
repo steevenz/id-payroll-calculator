@@ -35,6 +35,13 @@ class Presences
     public $overtime = 0;
 
     /**
+     * Presences::$splitShifts
+     * 
+     * @var int 
+     */
+    public $splitShifts = 0;
+
+    /**
      * Presences::$latetime
      *
      * @var int

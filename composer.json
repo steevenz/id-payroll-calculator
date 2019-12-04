@@ -24,7 +24,7 @@
     "wiki": "https://github.com/steevenz/id-payroll-calculator/wiki"
   },
   "require": {
-    "php": "~7.2.0",
+    "php": "^7.2.0",
     "o2system/spl": "*"
   },
   "autoload": {

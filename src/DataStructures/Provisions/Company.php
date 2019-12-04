@@ -35,6 +35,20 @@ class Company
     public $calculateOvertime = true;
 
     /**
+     * Company::$calculateSplitShifts
+     *
+     * @var bool
+     */
+    public $calculateSplitShifts = true;
+
+    /**
+     * Company::$splitShiftsRate
+     * 
+     * @var int 
+     */
+    public $splitShiftsRate = 0;
+
+    /**
      * Company::$calculateBPJSKesehatan
      *
      * @var bool
