@@ -211,13 +211,8 @@ class PayrollCalculator
         } else {
             if ($this->provisions->company->calculateBPJSKesehatan === true) {
                 // Calculate BPJS Kesehatan Allowance & Deduction
-                if ($this->employee->allowances->count()) {
-                    $this->employee->allowances->BPJSKesehatan = ($this->result->earnings->gross + $this->employee->allowances->getSum()) * (4 / 100);
-                    $this->employee->deductions->BPJSKesehatan = ($this->result->earnings->gross + $this->employee->allowances->getSum()) * (1 / 100);
-                } else {
-                    $this->employee->allowances->BPJSKesehatan = $this->result->earnings->gross * (4 / 100);
-                    $this->employee->deductions->BPJSKesehatan = $this->result->earnings->gross * (1 / 100);
-                }
+                $this->employee->allowances->BPJSKesehatan = $this->result->earnings->gross * (4 / 100);
+                $this->employee->deductions->BPJSKesehatan = $this->result->earnings->gross * (1 / 100);
 
                 // Maximum number of dependents family is 5
                 if ($this->employee->numOfDependentsFamily > 5) {
