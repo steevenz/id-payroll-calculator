@@ -54,7 +54,6 @@ $payrollCalculator->employee->numOfDependentsFamily = 0; // Jumlah tanggungan, m
 // Set data pendapatan karyawan
 $payrollCalculator->employee->earnings->base = 8000000; // Besaran nilai gaji pokok/bulan
 $payrollCalculator->employee->earnings->fixedAllowance = 0; // Besaran nilai tunjangan tetap
-$payrollCalculator->employee->earnings->overtime = 10000; // Besaran nilai uang lembur/jam
 $payrollCalculator->employee->calculateHolidayAllowance = 0; // jumlah bulan proporsional
 // NOTE: besaran nilai diatas bukan nilai hasil proses perhitungan absensi tetapi nilai default sebagai faktor perhitungan gaji.
 
