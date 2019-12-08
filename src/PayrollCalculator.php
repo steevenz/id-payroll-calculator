@@ -186,7 +186,7 @@ class PayrollCalculator
         $this->result->earnings->annualy->gross = $this->result->earnings->gross * 12;
 
         if ($this->employee->permanentStatus === false) {
-            $this->employee->allowances->BPJSKesehatan = 0;
+            $this->company->allowances->BPJSKesehatan = 0;
             $this->employee->deductions->BPJSKesehatan = 0;
 
             $this->employee->allowances->JKK = 0;
@@ -226,7 +226,7 @@ class PayrollCalculator
         } else {
             if ($this->provisions->company->calculateBPJSKesehatan === true) {
                 // Calculate BPJS Kesehatan Allowance & Deduction
-                $this->employee->allowances->BPJSKesehatan = $this->result->earnings->gross * (4 / 100);
+                $this->company->allowances->BPJSKesehatan = $this->result->earnings->gross * (4 / 100);
                 $this->employee->deductions->BPJSKesehatan = $this->result->earnings->gross * (1 / 100);
 
                 // Maximum number of dependents family is 5
@@ -253,20 +253,20 @@ class PayrollCalculator
 
             if ($this->provisions->company->JHT === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
-                    $this->employee->allowances->JHT = $this->result->earnings->gross * (3.7 / 100);
+                    $this->company->allowances->JHT = $this->result->earnings->gross * (3.7 / 100);
                     $this->employee->deductions->JHT = $this->result->earnings->gross * (2 / 100);
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
-                    $this->employee->allowances->JHT = $this->provisions->state->highestWage * (3.7 / 100);
+                    $this->company->allowances->JHT = $this->provisions->state->highestWage * (3.7 / 100);
                     $this->employee->deductions->JHT = $this->provisions->state->highestWage * (2 / 100);
                 }
             }
 
             if ($this->provisions->company->JIP === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
-                    $this->employee->allowances->JIP = $this->result->earnings->gross * (2 / 100);
+                    $this->company->allowances->JIP = $this->result->earnings->gross * (2 / 100);
                     $this->employee->deductions->JIP = $this->result->earnings->gross * (1 / 100);
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
-                    $this->employee->allowances->JIP = 7000000 * (2 / 100);
+                    $this->company->allowances->JIP = 7000000 * (2 / 100);
                     $this->employee->deductions->JIP = 7000000 * (1 / 100);
                 }
             }
@@ -308,9 +308,7 @@ class PayrollCalculator
             $this->result->earnings->annualy->nett = $this->result->earnings->nett * 12;
 
             $this->result->offsetSet('taxable', (new Pph21($this))->calculate());
-            $this->result->offsetSet('company', new SplArrayObject([
-                'allowances' => new SplArrayObject(),
-            ]));
+            $this->result->offsetSet('company', $this->company->allowances);
 
             // Pengurangan Penalty
             $this->employee->deductions->offsetSet('penalty', new SplArrayObject([
