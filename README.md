@@ -88,7 +88,7 @@ $payrollCalculator->provisions->company->numOfWorkingHours = 8; // Jumlah hari k
 $payrollCalculator->provisions->company->calculateOvertime = true; // Apakah perusahaan menghitung lembur
 
 // Jika $payrollCalculator->provisions->state->overtimeRegulationCalculation = false;
-$payrollCalculator->provisions->company->overtimeRate = 10000 // Nilai rate overtime per jam, Jika bernilai 0 namun $payrollCalculator->provisions->company->calculateOvertime, maka rate akan dihitung secara otomatis berdasarkan renumerasi besaran gaji, hari dan jam kerja
+$payrollCalculator->provisions->company->overtimeRate = 10000; // Nilai rate overtime per jam, Jika bernilai 0 namun $payrollCalculator->provisions->company->calculateOvertime, maka rate akan dihitung secara otomatis berdasarkan renumerasi besaran gaji, hari dan jam kerja
 
 $payrollCalculator->provisions->company->calculateSplitShifts = true; // Apakah perusahan menghitung split shifts
 $payrollCalculator->provisions->company->splitShiftsRate = 25000; // Rate Split Shift perusahaan
