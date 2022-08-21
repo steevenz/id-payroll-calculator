@@ -11,15 +11,15 @@
 
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator;
+namespace IrwanRuntuwene\IndonesiaPayrollCalculator;
 
 // ------------------------------------------------------------------------
 
 use O2System\Spl\DataStructures\SplArrayObject;
-use Steevenz\IndonesiaPayrollCalculator\DataStructures;
-use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph21;
-use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph23;
-use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph26;
+use IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures;
+use IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes\Pph21;
+use IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes\Pph23;
+use IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes\Pph26;
 
 /**
  * Class PayrollCalculator
