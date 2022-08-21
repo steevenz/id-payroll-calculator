@@ -17,7 +17,7 @@ namespace IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Provisions;
 
 /**
  * Class State
- * @package IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Provisions
+ * @package Steevenz\IndonesiaPayrollCalculator\DataStructures\Provisions
  */
 class State
 {
@@ -40,7 +40,7 @@ class State
      *
      * @var int
      */
-    public $highestWage = 8000000;
+    public $highestWage = 7703500;
 
     /**
      * State::$additionalPTKPforMarriedEmployees
