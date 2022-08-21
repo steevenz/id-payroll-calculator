@@ -17,7 +17,7 @@ use O2System\Spl\DataStructures\SplArrayObject;
 
 /**
  * Class Pph21
- * @package IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes
+ * @package Steevenz\IndonesiaPayrollCalculator\Taxes
  */
 class Pph21 extends AbstractPph
 {
@@ -37,6 +37,7 @@ class Pph21 extends AbstractPph
 
             // Annual PKP (Pajak Atas Upah)
             if($this->calculator->employee->earnings->holidayAllowance > 0 && $this->calculator->employee->bonus->getSum() == 0) {
+                // print_r('1');
                 // Pajak Atas Upah
                 $earningTax = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount) * ($this->getRate($this->calculator->result->earnings->nett) / 100);
 
@@ -45,6 +46,7 @@ class Pph21 extends AbstractPph
 
                 $this->result->liability->annual = $this->result->pkp - $earningTax;
             } elseif($this->calculator->employee->earnings->holidayAllowance > 0 && $this->calculator->employee->bonus->getSum() > 0) {
+                // print_r('2');
                 // Pajak Atas Upah
                 $earningTax = ($this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount) * ($this->getRate($this->calculator->result->earnings->nett) / 100);
 
@@ -53,8 +55,12 @@ class Pph21 extends AbstractPph
                 $this->result->liability->annual = $this->result->pkp - $earningTax;
             } else {
                 $this->result->pkp = $this->calculator->result->earnings->annualy->nett - $this->result->ptkp->amount;
+
+                // print_r($this->calculator->result->earnings->annualy->nett); die;
+                // print_r('3');
                 $this->result->liability->annual = $this->result->pkp * ($this->getRate($this->calculator->result->earnings->nett) / 100);
             }
+            // die;
             
             if($this->result->liability->annual > 0) {
                 // Jika tidak memiliki NPWP dikenakan tambahan 20%
