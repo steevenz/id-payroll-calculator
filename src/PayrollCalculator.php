@@ -11,19 +11,19 @@
 
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator;
+namespace IrwanRuntuwene\IndonesiaPayrollCalculator;
 
 // ------------------------------------------------------------------------
 
 use O2System\Spl\DataStructures\SplArrayObject;
-use Steevenz\IndonesiaPayrollCalculator\DataStructures;
-use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph21;
-use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph23;
-use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph26;
+use IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures;
+use IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes\Pph21;
+use IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes\Pph23;
+use IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes\Pph26;
 
 /**
  * Class PayrollCalculator
- * @package Steevenz\IndonesiaPayrollCalculator
+ * @package IrwanRuntuwene\IndonesiaPayrollCalculator
  */
 class PayrollCalculator
 {
@@ -57,14 +57,14 @@ class PayrollCalculator
     /**
      * PayrollCalculator::$provisions
      *
-     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Provisions
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Provisions
      */
     public $provisions;
 
     /**
      * PayrollCalculator::$employee
      *
-     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee
      */
     public $employee;
 

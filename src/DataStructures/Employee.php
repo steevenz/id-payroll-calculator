@@ -10,13 +10,13 @@
  */
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator\DataStructures;
+namespace IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures;
 
 // ------------------------------------------------------------------------
 
 /**
  * Class Employee
- * @package Steevenz\IndonesiaPayrollCalculator\DataStructures
+ * @package IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures
  */
 class Employee
 {
@@ -51,28 +51,28 @@ class Employee
     /**
      * Employee::$presences
      *
-     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee\Presences
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee\Presences
      */
     public $presences;
 
     /**
      * Employee::$earnings
      *
-     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee\Earnings
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee\Earnings
      */
     public $earnings;
 
     /**
      * Employee::$allowances
      *
-     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee\Allowances
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee\Allowances
      */
     public $allowances;
 
     /**
      * Employee::$deductions
      *
-     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee\Deductions
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee\Deductions
      */
     public $deductions;
 
@@ -86,7 +86,7 @@ class Employee
     /**
      * Employee::$bonus
      *
-     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee\Bonus
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee\Bonus
      */
     public $bonus;
 

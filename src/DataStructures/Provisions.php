@@ -10,27 +10,27 @@
  */
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator\DataStructures;
+namespace IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures;
 
 // ------------------------------------------------------------------------
 
 /**
  * Class Provisions
- * @package Steevenz\IndonesiaPayrollCalculator\DataStructures
+ * @package IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures
  */
 class Provisions
 {
     /**
      * Provision::$state
      *
-     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Provisions\State
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Provisions\State
      */
     public $state;
 
     /**
      * Provision::$company
      *
-     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Provisions\Company
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Provisions\Company
      */
     public $company;
 

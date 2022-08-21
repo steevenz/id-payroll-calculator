@@ -11,13 +11,13 @@
 
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator\Taxes;
+namespace IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes;
 
 use O2System\Spl\DataStructures\SplArrayObject;
 
 /**
  * Class Pph26
- * @package Steevenz\IndonesiaPayrollCalculator\Taxes
+ * @package IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes
  */
 class Pph26 extends AbstractPph
 {

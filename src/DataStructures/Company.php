@@ -10,20 +10,20 @@
  */
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator\DataStructures;
+namespace IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures;
 
 // ------------------------------------------------------------------------
 
 /**
  * Class Company
- * @package Steevenz\IndonesiaPayrollCalculator\DataStructures
+ * @package IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures
  */
 class Company
 {
     /**
      * Company::$allowances
      *
-     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee\Allowances
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee\Allowances
      */
     public $allowances;
 

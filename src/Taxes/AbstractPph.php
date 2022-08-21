@@ -11,16 +11,16 @@
 
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator\Taxes;
+namespace IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes;
 
 // ------------------------------------------------------------------------
 
 use O2System\Spl\DataStructures\SplArrayObject;
-use Steevenz\IndonesiaPayrollCalculator\PayrollCalculator;
+use IrwanRuntuwene\IndonesiaPayrollCalculator\PayrollCalculator;
 
 /**
  * Class AbstractPph
- * @package Steevenz\IndonesiaPayrollCalculator\Taxes
+ * @package IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes
  */
 abstract class AbstractPph
 {
@@ -43,7 +43,7 @@ abstract class AbstractPph
     /**
      * AbstractPph::__construct
      *
-     * @param \Steevenz\IndonesiaPayrollCalculator\PayrollCalculator $calculator
+     * @param \IrwanRuntuwene\IndonesiaPayrollCalculator\PayrollCalculator $calculator
      */
     public function __construct(PayrollCalculator &$calculator)
     {

@@ -10,13 +10,13 @@
  */
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator\DataStructures\Provisions;
+namespace IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Provisions;
 
 // ------------------------------------------------------------------------
 
 /**
  * Class Company
- * @package Steevenz\IndonesiaPayrollCalculator\DataStructures\Provisions
+ * @package IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Provisions
  */
 class Company
 {

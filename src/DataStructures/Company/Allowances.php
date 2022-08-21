@@ -10,7 +10,7 @@
  */
 // ------------------------------------------------------------------------
 
-namespace Steevenz\IndonesiaPayrollCalculator\DataStructures\Company;
+namespace IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Company;
 
 // ------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ use O2System\Spl\DataStructures\SplArrayObject;
 
 /**
  * Class Allowances
- * @package Steevenz\IndonesiaPayrollCalculator\DataStructures\Company
+ * @package IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Company
  */
 class Allowances extends SplArrayObject
 {

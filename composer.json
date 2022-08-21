@@ -23,11 +23,11 @@
   ],
   "support": {
     "email": "stefanus.irwan@gmail.com",
-    "issues": "https://github.com/irwan-runtuwene/id-payroll-calc/issues"
+    "issues": "https://github.com/irwan-runtuwene/id-payroll-calculator/issues"
   },
   "links": {
-    "info": "https://github.com/steevenz/id-payroll-calc",
-    "wiki": "https://github.com/steevenz/id-payroll-calc/wiki"
+    "info": "https://github.com/irwan-runtuwene/id-payroll-calculator",
+    "wiki": "https://github.com/irwan-runtuwene/id-payroll-calculator/wiki"
   },
   "require": {
     "php": "^7.2.0",
@@ -35,7 +35,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Steevenz\\IndonesiaPayrollCalculator\\": "src"
+      "IrwanRuntuwene\\IndonesiaPayrollCalculator\\": "src"
     }
   }
 }
