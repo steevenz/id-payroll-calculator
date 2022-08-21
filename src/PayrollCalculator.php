@@ -11,19 +11,19 @@
 
 // ------------------------------------------------------------------------
 
-namespace IrwanRuntuwene\IndonesiaPayrollCalculator;
+namespace Steevenz\IndonesiaPayrollCalculator;
 
 // ------------------------------------------------------------------------
 
 use O2System\Spl\DataStructures\SplArrayObject;
-use IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures;
-use IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes\Pph21;
-use IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes\Pph23;
-use IrwanRuntuwene\IndonesiaPayrollCalculator\Taxes\Pph26;
+use Steevenz\IndonesiaPayrollCalculator\DataStructures;
+use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph21;
+use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph23;
+use Steevenz\IndonesiaPayrollCalculator\Taxes\Pph26;
 
 /**
  * Class PayrollCalculator
- * @package IrwanRuntuwene\IndonesiaPayrollCalculator
+ * @package Steevenz\IndonesiaPayrollCalculator
  */
 class PayrollCalculator
 {
@@ -57,14 +57,14 @@ class PayrollCalculator
     /**
      * PayrollCalculator::$provisions
      *
-     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Provisions
+     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Provisions
      */
     public $provisions;
 
     /**
      * PayrollCalculator::$employee
      *
-     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee
+     * @var \Steevenz\IndonesiaPayrollCalculator\DataStructures\Employee
      */
     public $employee;
 
@@ -103,6 +103,7 @@ class PayrollCalculator
         $this->result = new SplArrayObject([
             'earnings'    => new SplArrayObject([
                 'base'           => 0,
+                'gaji_plus_tunjangan' => 0,
                 'fixedAllowance' => 0,
                 'annualy'        => new SplArrayObject([
                     'nett'  => 0,
@@ -124,11 +125,12 @@ class PayrollCalculator
     {
         if ($this->taxNumber == 21) {
             return $this->calculateBaseOnPph21();
-        } elseif ($this->taxNumber == 23) {
-            return $this->calculateBaseOnPph23();
-        } elseif ($this->taxNumber == 26) {
-            return $this->calculateBaseOnPph26();
-        }
+        } 
+        // elseif ($this->taxNumber == 23) {
+        //     return $this->calculateBaseOnPph23();
+        // } elseif ($this->taxNumber == 26) {
+        //     return $this->calculateBaseOnPph26();
+        // }
     }
 
     // ------------------------------------------------------------------------
@@ -223,7 +225,11 @@ class PayrollCalculator
             $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
             $this->result->allowances->offsetSet('positionTax', 0);
             $this->result->allowances->offsetSet('pph21Tax', 0);
+        
         } else {
+            // jika permanent employee
+
+
             if ($this->provisions->company->calculateBPJSKesehatan === true) {
                 // Calculate BPJS Kesehatan Allowance & Deduction
                 $this->company->allowances->BPJSKesehatan = $this->result->earnings->gross * (4 / 100);
@@ -237,37 +243,38 @@ class PayrollCalculator
 
             if ($this->provisions->company->JKK === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
-                    $this->employee->allowances->JKK = $this->result->earnings->gross * ($this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade) / 100);
+                    $this->company->allowances->JKK = round( $this->result->earnings->gross * ($this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade) / 100) ) ;
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
-                    $this->employee->allowances->JKK = $this->provisions->state->highestWage * $this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade);
+                    $this->company->allowances->JKK = round( $this->provisions->state->highestWage * ($this->provisions->state->getJKKRiskGradePercentage($this->provisions->company->riskGrade) / 100) );
                 }
             }
 
             if ($this->provisions->company->JKM === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
-                    $this->employee->allowances->JKM = $this->result->earnings->gross * (0.30 / 100);
+                    $this->company->allowances->JKM = round( $this->result->earnings->gross * (0.30 / 100) ) ;
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
-                    $this->employee->allowances->JKM = $this->provisions->state->highestWage * (0.30 / 100);
+                    $this->company->allowances->JKM = round( $this->provisions->state->highestWage * (0.30 / 100) );
                 }
             }
 
             if ($this->provisions->company->JHT === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
-                    $this->company->allowances->JHT = $this->result->earnings->gross * (3.7 / 100);
-                    $this->employee->deductions->JHT = $this->result->earnings->gross * (2 / 100);
+                    $this->company->allowances->JHT = round( $this->result->earnings->gross * (3.7 / 100) );
+                    $this->employee->deductions->JHT = round( $this->result->earnings->gross * (2 / 100));
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
-                    $this->company->allowances->JHT = $this->provisions->state->highestWage * (3.7 / 100);
-                    $this->employee->deductions->JHT = $this->provisions->state->highestWage * (2 / 100);
+                    $this->company->allowances->JHT = round( $this->provisions->state->highestWage * (3.7 / 100) );
+                    $this->employee->deductions->JHT = round( $this->provisions->state->highestWage * (2 / 100) );
                 }
             }
 
             if ($this->provisions->company->JIP === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
-                    $this->company->allowances->JIP = $this->result->earnings->gross * (2 / 100);
-                    $this->employee->deductions->JIP = $this->result->earnings->gross * (1 / 100);
+                    $this->employee->allowances->JIP = round( $this->result->earnings->gross * (2 / 100) );
+                    $this->employee->deductions->JIP = round( $this->result->earnings->gross * (1 / 100) );
+
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
-                    $this->company->allowances->JIP = 7000000 * (2 / 100);
-                    $this->employee->deductions->JIP = 7000000 * (1 / 100);
+                    $this->company->allowances->JIP = round( $this->provisions->state->highestWage * (2 / 100) );
+                    $this->employee->deductions->JIP = round( $this->provisions->state->highestWage * (1 / 100) );
                 }
             }
 
@@ -305,6 +312,7 @@ class PayrollCalculator
 
             // Pendapatan bersih
             $this->result->earnings->nett = $this->result->earnings->gross + $this->result->allowances->getSum() - $this->result->deductions->getSum();
+            $this->result->earnings->gaji_plus_tunjangan = $this->employee->allowances;
             $this->result->earnings->annualy->nett = $this->result->earnings->nett * 12;
 
             $this->result->offsetSet('taxable', (new Pph21($this))->calculate());
@@ -340,8 +348,6 @@ class PayrollCalculator
                     $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
                     $this->result->deductions->offsetSet('positionTax', $monthlyPositionTax);
                     $this->result->deductions->offsetSet('pph21Tax', $this->result->taxable->liability->monthly);
-                    $this->result->allowances->offsetSet('positionTax', $monthlyPositionTax);
-                    $this->result->allowances->offsetSet('pph21Tax', $this->result->taxable->liability->monthly);
                     break;
             }
         }
