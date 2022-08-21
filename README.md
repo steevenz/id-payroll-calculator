@@ -1,5 +1,5 @@
 # Indonesia Payroll Calculator
-[![Latest Stable Version](https://poser.pugx.org/steevenz/id-payroll-calculator/v/stable)](https://packagist.org/packages/steevenz/id-payroll-calculator) [![Total Downloads](https://poser.pugx.org/steevenz/id-payroll-calculator/downloads)](https://packagist.org/packages/steevenz/id-payroll-calculator) [![Latest Unstable Version](https://poser.pugx.org/steevenz/id-payroll-calculator/v/unstable)](https://packagist.org/packages/steevenz/id-payroll-calculator) [![License](https://poser.pugx.org/steevenz/id-payroll-calculator/license)](https://packagist.org/packages/steevenz/id-payroll-calculator)
+[![Latest Stable Version](https://poser.pugx.org/irwan.runtuwene/id-payroll-calc/v/stable)](https://packagist.org/packages/irwan.runtuwene/id-payroll-calc) [![Total Downloads](https://poser.pugx.org/irwan.runtuwene/id-payroll-calc/downloads)](https://packagist.org/packages/irwan.runtuwene/id-payroll-calc) [![Latest Unstable Version](https://poser.pugx.org/irwan.runtuwene/id-payroll-calc/v/unstable)](https://packagist.org/packages/irwan.runtuwene/id-payroll-calc) [![License](https://poser.pugx.org/irwan.runtuwene/id-payroll-calc/license)](https://packagist.org/packages/irwan.runtuwene/id-payroll-calc)
 
 Ini merupakan PHP Component pembantu proses perhitungan gaji yang disesuaikan dengan peraturan-peraturan yang berlaku di Indonesia.
 
@@ -26,7 +26,7 @@ Instalasi
 ---------
 Cara terbaik untuk melakukan instalasi library ini adalah dengan menggunakan [Composer][7]
 ```
-composer require steevenz/id-payroll-calculator
+composer require irwan.runtuwene/id-payroll-calc
 ```
 
 Penggunaan
@@ -121,12 +121,13 @@ $payrollCalculator->employee->earnings->base = 8000000;
 $payrollCalculator->getCalculation(); // Berupa SplArrayObject yang berisi lengkap dengan perhitungan pajak
 ```
 
-Untuk keterangan lebih lengkap dapat dibaca di [Wiki](https://github.com/steevenz/id-payroll-calculator/wiki)
+Untuk keterangan lebih lengkap dapat dibaca di [Wiki](https://github.com/irwan.runtuwene/id-payroll-calc/wiki)
 
-Ide, Kritik dan Saran
+Credits
 ---------------------
-Jika anda memiliki ide, kritik ataupun saran, anda dapat mengirimkan email ke [steevenz@stevenz.com][3]. 
-Anda juga dapat mengunjungi situs pribadi saya di [steevenz.com][1]
+Repo ini merukapan forking dari https://github.com/steevenz/id-payroll-calculator
+
+Terima kasih kepada [Steeven Andrian Salim](https://github.com/steevenz) untuk code awal yang cemerlang.
 
 Bugs and Issues
 ---------------
@@ -138,12 +139,12 @@ Requirements
 - [Composer][9]
 - [O2System Spl][10]
 
-[1]: http://steevenz.com
+[1]: https://github.com/steevenz
 [2]: http://steevenz.com/blog/id-payroll-calculator-api
-[3]: mailto:steevenz@steevenz.com
-[4]: http://github.com/steevenz/id-payroll-calculator
-[5]: http://github.com/steevenz/id-payroll-calculator/wiki
-[6]: http://github.com/steevenz/id-payroll-calculator/issues
-[7]: https://packagist.org/packages/steevenz/id-payroll-calculator
+[3]: https://github.com/steevenz/id-payroll-calculator
+[4]: http://github.com/irwan.runtuwene/id-payroll-calc
+[5]: http://github.com/irwan.runtuwene/id-payroll-calc/wiki
+[6]: http://github.com/irwan.runtuwene/id-payroll-calc/issues
+[7]: https://packagist.org/packages/irwan.runtuwene/id-payroll-calc
 [9]: https://getcomposer.org
 [10]: http://github.com/o2system/spl

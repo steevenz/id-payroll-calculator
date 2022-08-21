@@ -1,5 +1,5 @@
 {
-  "name": "steevenz/id-payroll-calculator",
+  "name": "irwan-runtuwene/id-payroll-calculator",
   "description": "Indonesian Employee Payroll Calculator",
   "license": "MIT",
   "type": "php-class",
@@ -13,15 +13,21 @@
       "email": "steevenz@steevenz.com",
       "homepage": "http://www.steevenz.com",
       "role": "PHP Programmer"
+    },
+    {
+      "name": "Stefanus Irwan Runtuwene",
+      "email": "stefanus.irwan@gmail.com",
+      "homepage": "http://igooana.id",
+      "role": "PHP Programmer"
     }
   ],
   "support": {
-    "email": "steevenz@steevenz.com",
-    "issues": "https://github.com/steevenz/id-payroll-calculator/issues"
+    "email": "stefanus.irwan@gmail.com",
+    "issues": "https://github.com/irwan-runtuwene/id-payroll-calc/issues"
   },
   "links": {
-    "info": "https://github.com/steevenz/id-payroll-calculator",
-    "wiki": "https://github.com/steevenz/id-payroll-calculator/wiki"
+    "info": "https://github.com/steevenz/id-payroll-calc",
+    "wiki": "https://github.com/steevenz/id-payroll-calc/wiki"
   },
   "require": {
     "php": "^7.2.0",
