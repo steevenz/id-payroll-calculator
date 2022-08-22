@@ -117,4 +117,11 @@ class Company
      * @var int
      */
     public $latetimePenalty = 0;
+
+    /**
+     * Company::$highestWageBPJSKesehatan
+     *
+     * @var int
+     */
+    public $highestWageBPJSKesehatan = 0;
 }
