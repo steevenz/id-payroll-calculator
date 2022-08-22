@@ -221,7 +221,7 @@ class PayrollCalculator
             if ($this->employee->earnings->holidayAllowance > 0) {
                 $this->result->allowances->offsetSet('holiday', $this->employee->earnings->holidayAllowance);
             }
-
+            print_r($this->employee); die;
             $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
             $this->result->allowances->offsetSet('positionTax', 0);
             $this->result->allowances->offsetSet('pph21Tax', 0);

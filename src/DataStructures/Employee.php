@@ -100,6 +100,7 @@ class Employee
         $this->presences = new Employee\Presences();
         $this->earnings = new Employee\Earnings();
         $this->allowances = new Employee\Allowances();
+        $this->nonTaxAllowances = new Employee\NonTaxAllowances();
         $this->deductions = new Employee\Deductions();
         $this->bonus = new Employee\Bonus();
     }

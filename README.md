@@ -32,7 +32,7 @@ composer require irwan-runtuwene/id-payroll-calculator
 Penggunaan
 ----------
 ```php
-use Steevenz\IndonesiaPayrollCalculator\PayrollCalculator;
+use IrwanRuntuwene\IndonesiaPayrollCalculator\PayrollCalculator;
 
 // Inisiasi class PayrollCalculator
 $payrollCalculator = new PayrollCalculator();
