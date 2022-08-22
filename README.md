@@ -1,11 +1,11 @@
 # Indonesia Payroll Calculator
-[![Latest Stable Version](https://poser.pugx.org/irwan.runtuwene/id-payroll-calculator/v/stable)](https://packagist.org/packages/irwan.runtuwene/id-payroll-calculator) [![Total Downloads](https://poser.pugx.org/irwan.runtuwene/id-payroll-calculator/downloads)](https://packagist.org/packages/irwan.runtuwene/id-payroll-calculator) [![Latest Unstable Version](https://poser.pugx.org/irwan.runtuwene/id-payroll-calculator/v/unstable)](https://packagist.org/packages/irwan.runtuwene/id-payroll-calculator) [![License](https://poser.pugx.org/irwan.runtuwene/id-payroll-calculator/license)](https://packagist.org/packages/irwan.runtuwene/id-payroll-calculator)
+[![Latest Stable Version](http://poser.pugx.org/irwan-runtuwene/id-payroll-calculator/v)](https://packagist.org/packages/irwan-runtuwene/id-payroll-calculator) [![Total Downloads](http://poser.pugx.org/irwan-runtuwene/id-payroll-calculator/downloads)](https://packagist.org/packages/irwan-runtuwene/id-payroll-calculator) [![Latest Unstable Version](http://poser.pugx.org/irwan-runtuwene/id-payroll-calculator/v/unstable)](https://packagist.org/packages/irwan-runtuwene/id-payroll-calculator) [![License](http://poser.pugx.org/irwan-runtuwene/id-payroll-calculator/license)](https://packagist.org/packages/irwan-runtuwene/id-payroll-calculator) [![PHP Version Require](http://poser.pugx.org/irwan-runtuwene/id-payroll-calculator/require/php)](https://packagist.org/packages/irwan-runtuwene/id-payroll-calculator)
 
 Ini merupakan PHP Component pembantu proses perhitungan gaji yang disesuaikan dengan peraturan-peraturan yang berlaku di Indonesia.
 
 Fitur
 -----
-* Perhitungan PPH21
+* Perhitungan PPH21 HPP 2021
 * Perhitungan PPH23
 * Perhitungan PPH26
 * Perhitungan Perpajakan Bonus dan Tunjangan Hari Raya
@@ -70,6 +70,10 @@ $payrollCalculator->employee->presences->splitShifts = 0; // perhitungan jumlah 
 $payrollCalculator->employee->allowances->offsetSet('tunjanganMakan', 100000);
 // NOTE: Jumlah allowances tidak ada batasan
 
+// Set data tunjangan karyawan yang tidak dipotong pajak
+$payrollCalculator->employee->nonTaxAllowances->offsetSet('fasilitas', 2750000);
+// NOTE: Jumlah allowances tidak ada batasan
+
 // Set data potongan karyawan diluar potongan BPJS Kesehatan dan Ketenagakerjaan
 $payrollCalculator->employee->deductions->offsetSet('kasbon', 100000);
 // NOTE: Jumlah deductions tidak ada batasan
@@ -77,6 +81,10 @@ $payrollCalculator->employee->deductions->offsetSet('kasbon', 100000);
 // Set data bonus karyawan diluar tunjangan
 $payrollCalculator->employee->bonus->offsetSet('serviceCharge', 100000);
 // NOTE: Jumlah bonus tidak ada batasan
+
+// Set data pinjaman karyawan 
+$payrollCalculator->employee->loans->offsetSet('pinjamanKaryawan', 1000000);
+// NOTE: Jumlah pinjaman tidak ada batasan
 
 // Set data ketentuan negara
 $payrollCalculator->provisions->state->overtimeRegulationCalculation = true; // Jika false maka akan dihitung sesuai kebijakan perusahaan
