@@ -70,6 +70,13 @@ class Employee
     public $allowances;
 
     /**
+     * Employee::$nonTaxAllowances
+     *
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee\AnonTaxAllowances
+     */
+    public $nonTaxAllowances;
+
+    /**
      * Employee::$deductions
      *
      * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee\Deductions
@@ -90,6 +97,13 @@ class Employee
      */
     public $bonus;
 
+    /**
+     * Employee::$loans
+     *
+     * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee\Loans
+     */
+    public $loans;
+
     // ------------------------------------------------------------------------
 
     /**
@@ -103,5 +117,6 @@ class Employee
         $this->nonTaxAllowances = new Employee\NonTaxAllowances();
         $this->deductions = new Employee\Deductions();
         $this->bonus = new Employee\Bonus();
+        $this->loans = new Employee\Loans();
     }
 }

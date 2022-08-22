@@ -105,12 +105,14 @@ class PayrollCalculator
                 'base'           => 0,
                 'gaji_plus_tunjangan' => 0,
                 'fixedAllowance' => 0,
+                'nonTaxAllowance' => 0,
                 'annualy'        => new SplArrayObject([
                     'nett'  => 0,
                     'gross' => 0,
                 ]),
             ]),
             'takeHomePay' => 0,
+            'loans' => 0,
         ]);
     }
 
@@ -204,6 +206,8 @@ class PayrollCalculator
             $this->result->offsetSet('allowances', $this->employee->allowances);
             $this->result->offsetSet('bonus', $this->employee->bonus);
             $this->result->offsetSet('deductions', $this->employee->deductions);
+            $this->result->offsetSet('nonTaxAllowances', $this->employee->nonTaxAllowances);
+            $this->result->offsetSet('loans', $this->employee->loans);
 
             // Pendapatan bersih
             $this->result->earnings->nett = $this->result->earnings->gross + $this->result->allowances->getSum() - $this->result->deductions->getSum();
@@ -221,8 +225,8 @@ class PayrollCalculator
             if ($this->employee->earnings->holidayAllowance > 0) {
                 $this->result->allowances->offsetSet('holiday', $this->employee->earnings->holidayAllowance);
             }
-            print_r($this->employee); die;
-            $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
+            
+            $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum() + $this->employee->nonTaxAllowances->getSum();
             $this->result->allowances->offsetSet('positionTax', 0);
             $this->result->allowances->offsetSet('pph21Tax', 0);
         
@@ -316,6 +320,8 @@ class PayrollCalculator
             $this->result->offsetSet('allowances', $this->employee->allowances);
             $this->result->offsetSet('bonus', $this->employee->bonus);
             $this->result->offsetSet('deductions', $this->employee->deductions);
+            $this->result->offsetSet('nonTaxAllowances', $this->employee->nonTaxAllowances);
+            $this->result->offsetSet('loans', $this->employee->loans);
 
             
 
@@ -353,14 +359,14 @@ class PayrollCalculator
             switch ($this->method) {
                 // Pajak ditanggung oleh perusahaan
                 case self::NETT_CALCULATION:
-                    $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum();
+                    $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum() + $this->result->nonTaxAllowances->getSum();
                     $this->result->company->allowances->offsetSet('positionTax', $monthlyPositionTax);
                     $this->result->company->allowances->offsetSet('pph21Tax',
                         $this->result->taxable->liability->monthly);
                     break;
                 // Pajak ditanggung oleh karyawan
                 case self::GROSS_CALCULATION:
-                    $this->result->takeHomePay = $this->result->earnings->nett + $this->employee->earnings->holidayAllowance + $this->employee->bonus->getSum() - $this->employee->deductions->penalty->getSum() - $this->result->taxable->liability->monthly - $monthlyPositionTax;
+                    $this->result->takeHomePay = ($this->result->earnings->gross + $this->employee->allowances['tunjanganMakan'] + $this->employee->allowances['transport'] + $this->employee->allowances['pulsa'] + $this->result->nonTaxAllowances->getSum()) - ($this->employee->deductions->BPJSKesehatan + $this->employee->deductions->JIP + $this->employee->deductions->JHT + $this->result->taxable->liability->monthly + $this->employee->loans->getSum());
                     $this->result->deductions->offsetSet('positionTax', $monthlyPositionTax);
                     $this->result->deductions->offsetSet('pph21Tax', $this->result->taxable->liability->monthly);
                     break;
