@@ -325,7 +325,11 @@ class PayrollCalculator
             $this->result->offsetSet('deductions', $this->employee->deductions);
             $this->result->offsetSet('nonTaxAllowances', $this->employee->nonTaxAllowances);
             $this->result->offsetSet('loans', $this->employee->loans);
-
+            
+            // hitung gross plus tunjangan bpjs
+            $grossPlusBPJS = $this->result->earnings->base + $this->result->allowances->getSum();
+            $this->employee->deductions->biayaJabatan = ($grossPlusBPJS) * (5/100) >= 500000 ? 500000 : $grossPlusBPJS * (5/100);
+            
             // set deduction presence if not presence
             $unWork = $this->provisions->company->numOfWorkingDays - $this->employee->presences->workDays;
 
@@ -371,25 +375,6 @@ class PayrollCalculator
                     break;
                 // Pajak ditanggung oleh karyawan
                 case self::GROSS_CALCULATION:
-                    $dump = array(
-                        'penambah' => array(
-                            'allowances' => number_format($this->employee->allowances['tunjanganMakan'] + $this->employee->allowances['transport'] + $this->employee->allowances['pulsa'], 2, ',', '.'),
-                            'bonus'      =>  number_format($this->employee->bonus->getSum(), 2, ',', '.'),
-                            'nonTaxAllowances' => number_format($this->result->nonTaxAllowances->getSum(), 2, ',', '.'),
-                            'total' => number_format($this->result->earnings->gross + $this->employee->allowances['tunjanganMakan'] + $this->employee->allowances['transport'] + $this->employee->allowances['pulsa'], 2, ',', '.'),
-                            'totalFasilitas' => number_format($this->result->earnings->gross + $this->employee->allowances['tunjanganMakan'] + $this->employee->allowances['transport'] + $this->employee->allowances['pulsa']  + $this->result->nonTaxAllowances->getSum(), 2, ',', '.'),
-                        ),
-                        'pengurang' => array(
-                            'pph21' => number_format($this->result->taxable->liability->monthly, 2, ',', '.'),
-                            'pinjaman' => number_format($this->employee->loans->getSum(), 2, ',', '.'),
-                            'bpjs' => array(
-                                'JHT' => number_format($this->employee->deductions->JHT, 2, ',', '.'),
-                                'JIP' => number_format($this->employee->deductions->JIP, 2, ',', '.'),
-                                'kesehatan' => number_format($this->employee->deductions->BPJSKesehatan, 2, ',', '.'),
-                            ),
-                        ),
-                        'THP' => number_format(($this->result->earnings->gross + $this->employee->allowances['tunjanganMakan'] + $this->employee->allowances['transport'] + $this->employee->allowances['pulsa'] + $this->result->nonTaxAllowances->getSum()) - ($this->employee->deductions->BPJSKesehatan + $this->employee->deductions->JIP + $this->employee->deductions->JHT + $this->result->taxable->liability->monthly + $this->employee->loans->getSum()), 2, ',', '.'),
-                    ); print_r($dump); die;
                     $this->result->takeHomePay = ($this->result->earnings->gross + $this->employee->allowances['tunjanganMakan'] + $this->employee->allowances['transport'] + $this->employee->allowances['pulsa'] + $this->result->nonTaxAllowances->getSum()) - ($this->employee->deductions->BPJSKesehatan + $this->employee->deductions->JIP + $this->employee->deductions->JHT + $this->result->taxable->liability->monthly + $this->employee->loans->getSum());
                     $this->result->deductions->offsetSet('positionTax', $monthlyPositionTax);
                     $this->result->deductions->offsetSet('pph21Tax', $this->result->taxable->liability->monthly);
