@@ -342,8 +342,8 @@ class PayrollCalculator
             // Pendapatan bersih
             $this->result->earnings->nett = $this->result->earnings->gross + $this->result->allowances->getSum() - $this->result->deductions->getSum();
 
-            if ($this->result->earnings->gross < $this->provisions->company->highestWageBPJSKesehatan) {
-                $this->employee->deductions->BPJSKesehatan = $this->result->earnings->gross * (1 / 100);
+            if ($this->result->earnings->base < $this->provisions->company->highestWageBPJSKesehatan) {
+                $this->employee->deductions->BPJSKesehatan = $this->result->earnings->base * (1 / 100);
             } else {
                 $this->employee->deductions->BPJSKesehatan = $this->provisions->company->highestWageBPJSKesehatan * (1 / 100);
             }
