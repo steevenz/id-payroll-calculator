@@ -301,14 +301,18 @@ class PayrollCalculator
                 }
             }
 
+            // hitung gross plus tunjangan bpjs
+            $grossPlusBPJS = $this->result->earnings->base + $this->result->allowances->getSum();
+            // $this->employee->deductions->biayaJabatan = ($grossPlusBPJS) * (5/100) >= 500000 ? 500000 : $grossPlusBPJS * (5/100);
+
             $monthlyPositionTax = 0;
-            if ($this->result->earnings->gross > $this->provisions->state->provinceMinimumWage) {
+            if ($grossPlusBPJSs > $this->provisions->state->provinceMinimumWage) {
 
                 /**
                  * According to Undang-Undang Direktur Jenderal Pajak Nomor PER-32/PJ/2015 Pasal 21 ayat 3
                  * Position Deduction is 5% from Annual Gross Income
                  */
-                $monthlyPositionTax = $this->result->earnings->gross * (5 / 100);
+                $monthlyPositionTax = $grossPlusBPJS * (5 / 100);
 
                 /**
                  * Maximum Position Deduction in Indonesia is 500000 / month
@@ -325,10 +329,6 @@ class PayrollCalculator
             $this->result->offsetSet('deductions', $this->employee->deductions);
             $this->result->offsetSet('nonTaxAllowances', $this->employee->nonTaxAllowances);
             $this->result->offsetSet('loans', $this->employee->loans);
-            
-            // hitung gross plus tunjangan bpjs
-            $grossPlusBPJS = $this->result->earnings->base + $this->result->allowances->getSum();
-            $this->employee->deductions->biayaJabatan = ($grossPlusBPJS) * (5/100) >= 500000 ? 500000 : $grossPlusBPJS * (5/100);
             
             // set deduction presence if not presence
             $unWork = $this->provisions->company->numOfWorkingDays - $this->employee->presences->workDays;
