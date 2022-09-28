@@ -301,6 +301,14 @@ class PayrollCalculator
                 }
             }
 
+
+            // Set result allowances, bonus, deductions
+            $this->result->offsetSet('allowances', $this->employee->allowances);
+            $this->result->offsetSet('bonus', $this->employee->bonus);
+            $this->result->offsetSet('deductions', $this->employee->deductions);
+            $this->result->offsetSet('nonTaxAllowances', $this->employee->nonTaxAllowances);
+            $this->result->offsetSet('loans', $this->employee->loans);
+
             // hitung gross plus tunjangan bpjs
             $grossPlusBPJS = $this->result->earnings->base + $this->result->allowances->getSum();
             // $this->employee->deductions->biayaJabatan = ($grossPlusBPJS) * (5/100) >= 500000 ? 500000 : $grossPlusBPJS * (5/100);
@@ -322,13 +330,6 @@ class PayrollCalculator
                     $monthlyPositionTax = 500000;
                 }
             }
-
-            // Set result allowances, bonus, deductions
-            $this->result->offsetSet('allowances', $this->employee->allowances);
-            $this->result->offsetSet('bonus', $this->employee->bonus);
-            $this->result->offsetSet('deductions', $this->employee->deductions);
-            $this->result->offsetSet('nonTaxAllowances', $this->employee->nonTaxAllowances);
-            $this->result->offsetSet('loans', $this->employee->loans);
             
             // set deduction presence if not presence
             $unWork = $this->provisions->company->numOfWorkingDays - $this->employee->presences->workDays;
