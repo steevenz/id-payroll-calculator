@@ -31,6 +31,8 @@ class Pph21 extends AbstractPph
         /**
          * PPh21 dikenakan bagi yang memiliki penghasilan lebih dari 4500000
          */
+
+         // base + total allowences
         if($this->calculator->result->earnings->nett > 4500000) {
             // Annual PTKP base on number of dependents family
             $this->result->ptkp->amount = $this->calculator->provisions->state->getPtkpAmount($this->calculator->employee->numOfDependentsFamily, $this->calculator->employee->maritalStatus);
@@ -71,49 +73,58 @@ class Pph21 extends AbstractPph
 
                 // $this->result->liability->annual = $this->result->pkp * ($this->getRate($this->calculator->result->earnings->annualy->nett) / 100);
                 $potongan = 0;
-                $loop = $this->getProgresive($this->calculator->result->earnings->annualy->nett);
+                $this->calculator->result->earnings->annualy->nett;
+                $loop = $this->getProgresive($this->result->pkp);
                 
 
                 for($i = 0; $i < $loop; $i++){
 
                     if( $i == 0){
 
-                        if($this->calculator->result->earnings->annualy->nett > 60000000){
+                        if($this->result->pkp > 60000000){
                             $potongan = 60000000 * ( 5 / 100 );
                         } else {
                             $potongan = $this->result->pkp * ( 5 / 100 );
                         }
                         
 
-                    } elseif($i == 1) {
+                    }
+                    
+                     elseif($i == 1) {
                         
-                        if($this->calculator->result->earnings->annualy->nett > 60000000 and $this->calculator->result->earnings->annualy->nett <= 250000000){
+                        if($this->result->pkp > 60000000 and $this->result->pkp <= 250000000){
                             $potongan += ( $this->result->pkp - 60000000 ) * ( 15 / 100 );
                         } else {
                             $potongan += 190000000  * ( 15 / 100 );
                         }
 
-                    } elseif($i == 2) {
+                    }
 
-                        if($this->calculator->result->earnings->annualy->nett > 250000000 and $this->calculator->result->earnings->annualy->nett <= 500000000){
+                    
+                    elseif($i == 2) {
+                        
+                        if($this->result->pkp > 250000000 and $this->result->pkp <= 500000000){
                             $potongan += ( $this->result->pkp - 250000000 ) * ( 25 / 100 );
                         } else {
                             $potongan += 250000000  * ( 25 / 100 );
                         }
-
-                    } elseif($i == 3) {
-
-                        if($this->calculator->result->earnings->annualy->nett > 500000000 and $this->calculator->result->earnings->annualy->nett <= 5000000000){
+                        
+                    } 
+                    
+                    elseif($i == 3) {
+                        
+                        if($this->result->pkp > 500000000 and $this->result->pkp <= 5000000000){
                             $potongan += ( $this->result->pkp - 500000000 ) * ( 30 / 100 );
                         } else {
                             $potongan += 4500000000  * ( 30 / 100 );
                         }
-
-                    } elseif($i == 4) {
-                         
+                        
+                    } 
+                    
+                    elseif($i == 4) {
+                        
                         $potongan += ( $this->result->pkp - 5000000000 ) * ( 35 / 100 );
                     }
-
                 }
 
                 $this->result->liability->annual = $potongan;
@@ -122,7 +133,6 @@ class Pph21 extends AbstractPph
                 // hasil = 163.006.740 * 5%
                 // progresif belum
             }
-            // die;
             
             if($this->result->liability->annual > 0) {
                 // Jika tidak memiliki NPWP dikenakan tambahan 20%
