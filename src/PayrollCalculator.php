@@ -360,8 +360,11 @@ class PayrollCalculator
             }
             // print_r($this->result->deductions); die;
 
-            $this->result->earnings->nett = $this->result->earnings->base + $this->result->allowances->getSum() - $this->result->deductions->getSum();
+            
+            $this->result->earnings->nett = $this->result->earnings->base + $this->result->allowances->getSum() + $this->employee->nonTaxAllowances->JHT + $this->employee->nonTaxAllowances->JIP - $this->result->deductions->getSum();
             $this->result->earnings->nett_tax = $this->result->earnings->base + $this->result->allowances->getSum() - $this->result->deductions->getSum();
+
+            // print_r($this->result->earnings->nett); die;
 
             // $grossPlusBPJS = $this->result->earnings->base + $this->result->allowances->getSum();
             $monthlyPositionTax = ($this->result->earnings->nett_tax) * (5/100) >= 500000 ? 500000 : $this->result->earnings->nett_tax * (5/100);
