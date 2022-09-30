@@ -358,11 +358,15 @@ class PayrollCalculator
             } else {
                 $this->employee->deductions->BPJSKesehatan = $this->provisions->company->highestWageBPJSKesehatan * (1 / 100);
             }
-            // print_r($this->result->deductions); die;
+
+
+            // print_r($this->result->allowances);
 
             
             $this->result->earnings->nett = $this->result->earnings->base + $this->result->allowances->getSum() + $this->employee->nonTaxAllowances->JHT + $this->employee->nonTaxAllowances->JIP - $this->result->deductions->getSum();
-            $this->result->earnings->nett_tax = $this->result->earnings->base + $this->result->allowances->getSum() - $this->result->deductions->getSum();
+            // biaya jabatan , jHT, jip = pengurang
+            // echo $this->result->earnings->base + $this->result->allowances->getSum();
+            $this->result->earnings->nett_tax = $this->result->earnings->base + $this->result->allowances->getSum() - $this->result->deductions->JHT - $this->result->deductions->JIP;
 
             // print_r($this->result->earnings->nett); die;
 
