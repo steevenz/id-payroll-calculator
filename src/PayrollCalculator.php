@@ -280,24 +280,24 @@ class PayrollCalculator
             if ($this->provisions->company->JHT === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
                     $this->company->allowances->JHT = ( $this->result->earnings->gross * (3.7 / 100) );
-                    $this->employee->nonTaxAllowances->JHT = ( $this->result->earnings->gross * (3.7 / 100) );
+                    $this->employee->allowances->JHT = ( $this->result->earnings->gross * (3.7 / 100) );
                     $this->employee->deductions->JHT = ( $this->result->earnings->gross * (2 / 100));
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
                     $this->company->allowances->JHT = ( $this->provisions->state->highestWage * (3.7 / 100));
-                    $this->employee->nonTaxAllowances->JHT = ( $this->provisions->state->highestWage * (3.7 / 100));
+                    $this->employee->allowances->JHT = ( $this->provisions->state->highestWage * (3.7 / 100));
                     $this->employee->deductions->JHT = ( $this->provisions->state->highestWage * (2 / 100));
                 }
             }
 
             if ($this->provisions->company->JIP === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
-                    $this->employee->nonTaxAllowances->JIP = ( $this->result->earnings->gross * (2 / 100) );
+                    $this->employee->allowances->JIP = ( $this->result->earnings->gross * (2 / 100) );
                     $this->company->allowances->JIP = ( $this->result->earnings->gross * (2 / 100) );
                     $this->employee->deductions->JIP = ( $this->result->earnings->gross * (1 / 100) );
 
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
                     $this->company->allowances->JIP = ( $this->provisions->state->highestWage * (2 / 100) );
-                    $this->employee->nonTaxAllowances->JIP = ( $this->provisions->state->highestWage * (2 / 100) );
+                    $this->employee->allowances->JIP = ( $this->provisions->state->highestWage * (2 / 100) );
                     $this->employee->deductions->JIP = ( $this->provisions->state->highestWage * (1 / 100) );
                 }
             }
@@ -360,22 +360,31 @@ class PayrollCalculator
             }
 
 
-            // print_r($this->result->allowances);
+            // print_r($this->result->deductions);
 
             
-            $this->result->earnings->nett = $this->result->earnings->base + $this->result->allowances->getSum() + $this->employee->nonTaxAllowances->JHT + $this->employee->nonTaxAllowances->JIP - $this->result->deductions->getSum();
+            
+
+            
+            $this->result->earnings->nett = $this->result->earnings->base + $this->result->allowances->getSum() - $this->result->deductions->getSum();
+            $monthlyPositionTax = ($this->result->earnings->nett) * (5/100) >= 500000 ? 500000 : $this->result->earnings->nett * (5/100);
+            $this->result->earnings->monthlyPositionTax = $monthlyPositionTax;
             // biaya jabatan , jHT, jip = pengurang
             // echo $this->result->earnings->base + $this->result->allowances->getSum();
-            $this->result->earnings->nett_tax = $this->result->earnings->base + $this->result->allowances->getSum() - $this->result->deductions->JHT - $this->result->deductions->JIP;
+            $this->result->earnings->nett_tax = $this->result->earnings->nett - ( $this->result->deductions->JHT + $this->result->deductions->JIP + $monthlyPositionTax );
+            //  $this->result->earnings->base + $this->result->allowances->getSum() - ;
+            
+            // print_r($monthlyPositionTax + $this->result->deductions->JHT + $this->result->deductions->JIP);
+
 
             // print_r($this->result->earnings->nett); die;
 
             // $grossPlusBPJS = $this->result->earnings->base + $this->result->allowances->getSum();
-            $monthlyPositionTax = ($this->result->earnings->nett_tax) * (5/100) >= 500000 ? 500000 : $this->result->earnings->nett_tax * (5/100);
+            
 
             
             $this->result->earnings->gaji_plus_tunjangan = $this->employee->allowances->getSum();
-            $this->result->earnings->annualy->nett = round( ( $this->result->earnings->nett_tax - $monthlyPositionTax )  * 12 );
+            $this->result->earnings->annualy->nett = round( ( $this->result->earnings->nett_tax )  * 12 );
 
             $this->result->offsetSet('taxable', (new Pph21($this))->calculate());
             $this->result->offsetSet('company', $this->company->allowances);
@@ -407,7 +416,7 @@ class PayrollCalculator
                     // print_r($this->result->earnings->base + $this->employee->allowances['tunjanganMakan'] + $this->employee->allowances['transport'] + $this->employee->allowances['pulsa']);
                     $penambah = ($this->result->earnings->base + $this->employee->allowances['tunjanganMakan'] + $this->employee->allowances['transport'] + $this->employee->allowances['pulsa'] + $this->employee->nonTaxAllowances->fasilitas);
                     
-                    $pengurang = ($this->employee->deductions->BPJSKesehatan + $this->employee->deductions->JIP + $this->employee->deductions->JHT + $this->result->taxable->liability->monthly + $this->employee->loans->getSum());
+                    $pengurang = ($this->employee->deductions->JIP + $this->employee->deductions->JHT + $this->result->taxable->liability->monthly + $this->employee->loans->getSum());
                     
                     $this->result->takeHomePay = $penambah - $pengurang;
 
