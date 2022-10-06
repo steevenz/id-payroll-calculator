@@ -82,6 +82,7 @@ class Employee
      * @var \IrwanRuntuwene\IndonesiaPayrollCalculator\DataStructures\Employee\Deductions
      */
     public $deductions;
+    public $nonTaxDeductions;
 
     /**
      * Company::$calculateHolidayAllowance
@@ -118,5 +119,6 @@ class Employee
         $this->deductions = new Employee\Deductions();
         $this->bonus = new Employee\Bonus();
         $this->loans = new Employee\Loans();
+        $this->nonTaxDeductions = new Employee\NonTaxDeductions();
     }
 }
