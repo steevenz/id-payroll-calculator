@@ -281,23 +281,23 @@ class PayrollCalculator
             if ($this->provisions->company->JHT === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
                     $this->company->allowances->JHT = ( $this->result->earnings->gross * (3.7 / 100) );
-                    $this->employee->nonTaxAllowances->JHT = ( $this->result->earnings->gross * (3.7 / 100) );
+                    $this->employee->allowances->JHT = ( $this->result->earnings->gross * (3.7 / 100) );
                     $this->employee->deductions->JHT = ( $this->result->earnings->gross * (2 / 100));
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
                     $this->company->allowances->JHT = ( $this->provisions->state->highestWage * (3.7 / 100));
-                    $this->employee->nonTaxAllowances->JHT = ( $this->provisions->state->highestWage * (3.7 / 100));
+                    $this->employee->allowances->JHT = ( $this->provisions->state->highestWage * (3.7 / 100));
                     $this->employee->deductions->JHT = ( $this->provisions->state->highestWage * (2 / 100));
                 }
             }
 
             if ($this->provisions->company->JIP === true) {
                 if ($this->result->earnings->gross < $this->provisions->state->highestWage) {
-                    $this->employee->nonTaxAllowances->JIP = ( $this->result->earnings->gross * (2 / 100) );
+                    $this->employee->allowances->JIP = ( $this->result->earnings->gross * (2 / 100) );
                     $this->company->allowances->JIP = ( $this->result->earnings->gross * (2 / 100) );
                     $this->employee->deductions->JIP = ( $this->result->earnings->gross * (1 / 100) );
                 } elseif ($this->result->earnings->gross >= $this->provisions->state->provinceMinimumWage && $this->result->earnings->gross >= $this->provisions->state->highestWage) {
                     $this->company->allowances->JIP = ( $this->provisions->state->highestWage * (2 / 100) );
-                    $this->employee->nonTaxAllowances->JIP = ( $this->provisions->state->highestWage * (2 / 100) );
+                    $this->employee->allowances->JIP = ( $this->provisions->state->highestWage * (2 / 100) );
                     $this->employee->deductions->JIP = ( $this->provisions->state->highestWage * (1 / 100) );
                 }
             }
@@ -383,8 +383,6 @@ class PayrollCalculator
             if ($this->employee->earnings->holidayAllowance > 0) {
                 $this->result->allowances->offsetSet('holiday', $this->employee->earnings->holidayAllowance);
             }
-
-            
 
             switch ($this->method) {
                 // Pajak ditanggung oleh perusahaan

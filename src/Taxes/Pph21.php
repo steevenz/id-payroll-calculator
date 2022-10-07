@@ -72,6 +72,7 @@ class Pph21 extends AbstractPph
                 // print_r( $this->calculator->result->earnings->annualy->nett ); die;
 
                 // $this->result->liability->annual = $this->result->pkp * ($this->getRate($this->calculator->result->earnings->annualy->nett) / 100);
+                $progresif = [];
                 $potongan = 0;
                 $this->calculator->result->earnings->annualy->nett;
                 $loop = $this->getProgresive($this->result->pkp);
@@ -82,21 +83,24 @@ class Pph21 extends AbstractPph
                     if( $i == 0){
 
                         if($this->result->pkp > 60000000){
-                            $potongan = 60000000 * ( 5 / 100 );
+                            $pot = 60000000 * ( 5 / 100 );
                         } else {
-                            $potongan = $this->result->pkp * ( 5 / 100 );
+                            $pot = $this->result->pkp * ( 5 / 100 );
                         }
-                        
-
+                        $progresif[] = $pot;
+                        $potongan += $pot;
                     }
                     
                      elseif($i == 1) {
                         
                         if($this->result->pkp > 60000000 and $this->result->pkp <= 250000000){
-                            $potongan += ( $this->result->pkp - 60000000 ) * ( 15 / 100 );
+                            $pot = ( $this->result->pkp - 60000000 ) * ( 15 / 100 );
                         } else {
-                            $potongan += 190000000  * ( 15 / 100 );
+                            // $pot = 190000000  * ( 15 / 100 );
+                            $pot = 200000000  * ( 15 / 100 );
                         }
+                        $progresif[] = $pot;
+                        $potongan += $pot;
 
                     }
 
@@ -104,29 +108,36 @@ class Pph21 extends AbstractPph
                     elseif($i == 2) {
                         
                         if($this->result->pkp > 250000000 and $this->result->pkp <= 500000000){
-                            $potongan += ( $this->result->pkp - 250000000 ) * ( 25 / 100 );
+                            $pot = ( $this->result->pkp - 250000000 ) * ( 25 / 100 );
                         } else {
-                            $potongan += 250000000  * ( 25 / 100 );
+                            $pot = 250000000  * ( 25 / 100 );
                         }
+                        $progresif[] = $pot;
+                        $potongan += $pot;
                         
                     } 
                     
                     elseif($i == 3) {
                         
                         if($this->result->pkp > 500000000 and $this->result->pkp <= 5000000000){
-                            $potongan += ( $this->result->pkp - 500000000 ) * ( 30 / 100 );
+                            $pot = ( $this->result->pkp - 500000000 ) * ( 30 / 100 );
                         } else {
-                            $potongan += 4500000000  * ( 30 / 100 );
+                            // $pot = 4500000000  * ( 30 / 100 );
+                            $pot = 4500000000  * ( 30 / 100 );
                         }
+                        $progresif[] = $pot;
+                        $potongan += $pot;
                         
                     } 
                     
                     elseif($i == 4) {
                         
-                        $potongan += ( $this->result->pkp - 5000000000 ) * ( 35 / 100 );
+                        $pot = ( $this->result->pkp - 5000000000 ) * ( 35 / 100 );
+                        $progresif[] = $pot;
+                        $potongan += $pot;
                     }
                 }
-
+                print_r($progresif); die();
                 $this->result->liability->annual = $potongan;
 
                 // print_r( $this->getRate($this->calculator->result->earnings->annualy->nett) ); die;
